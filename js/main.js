@@ -48,18 +48,32 @@
   }
 
   function applyBank(bank) {
-    const publicDetails = bank && bank.public && bank.confirmed;
+    const publicDetails = Boolean(bank && bank.public && bank.confirmed);
+    const tbaText = (bank && bank.message) || "Awaiting organiser bank details / payment instructions by email.";
     document.querySelectorAll("[data-bank-card]").forEach(function (card) {
       const tba = card.querySelector("[data-bank-tba]");
       const fields = card.querySelector("[data-bank-fields]");
-      if (tba) tba.classList.toggle("hidden", Boolean(publicDetails));
+      if (tba) {
+        tba.textContent = tbaText;
+        tba.classList.toggle("hidden", publicDetails);
+      }
       if (fields) fields.classList.toggle("hidden", !publicDetails);
       if (!publicDetails) return;
       card.querySelectorAll("[data-bank]").forEach(function (el) {
         const key = el.getAttribute("data-bank");
-        if (bank[key]) el.textContent = bank[key];
+        el.textContent = bank[key] || "";
+      });
+      card.querySelectorAll("[data-bank-row]").forEach(function (row) {
+        const key = row.getAttribute("data-bank-row");
+        row.classList.toggle("hidden", !bank[key]);
       });
     });
+    const lead = document.getElementById("confirmLead");
+    if (lead) {
+      lead.textContent = publicDetails
+        ? "Quote this reference on your MCB transfer. Amount due"
+        : "Awaiting organiser bank details / payment instructions by email. Amount due";
+    }
   }
 
   function showError(message) {
@@ -359,16 +373,7 @@
       if (label) label.textContent = "Transfer proof (optional — upload opens once Blob storage is configured)";
     }
   }).catch(function () {
-    applyBank({
-      public: true,
-      confirmed: true,
-      beneficiaryName: "Mauritius Round Table No. 9",
-      chequesPayableTo: "Round Table 9",
-      bank: "The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis",
-      accountNumber: "000443540438",
-      iban: "MU13MCBL0944000443540438000MUR",
-      swift: "MCBLMUMU",
-    });
+    applyBank({ public: false, confirmed: false });
   });
 
   const nav = document.querySelector("[data-nav]");

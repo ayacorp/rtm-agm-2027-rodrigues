@@ -15,9 +15,9 @@ module.exports = wrap(async function config(req, res) {
     rail: "mcb_mur_transfer",
     bank: publicBank(),
     proofUpload: blobConfigured(),
-    notifyConfigured: Boolean(process.env.RESEND_API_KEY || process.env.SMTP_HOST),
+    notifyConfigured: Boolean((process.env.RESEND_API_KEY || process.env.SMTP_HOST) && notifyEmail()),
     notifyInboxConfigured: Boolean(notifyEmail()),
-    treasurerPhone: treasurerPhone(),
+    treasurerPhone: treasurerPhone() || "",
     store: storeInfo(),
     storeRequirements: describeStoreRequirements(),
   });

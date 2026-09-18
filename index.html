@@ -456,27 +456,27 @@
             <p data-reveal>
               The only payment rail is an <strong>MCB MUR bank transfer</strong>.
               Quote your booking reference so we can match the payment to your
-              name. Deposit amount and due date remain TBA.
+              name. Account details stay with the organisers until they publish them.
             </p>
           </div>
           <div class="pay-grid">
             <div class="bank" data-reveal data-bank-card>
               <h3>MCB MUR transfer</h3>
               <p class="sub">The only payment rail — quote your booking reference</p>
-              <div class="bank-tba hidden" data-bank-tba>Account details to be confirmed by organisers</div>
-              <div data-bank-fields>
-                <div class="brow"><span class="k">Beneficiary name</span><span class="v" data-bank="beneficiaryName">Mauritius Round Table No. 9</span></div>
-                <div class="brow"><span class="k">Cheques payable to</span><span class="v" data-bank="chequesPayableTo">Round Table 9</span></div>
-                <div class="brow"><span class="k">Bank</span><span class="v" data-bank="bank">The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis</span></div>
-                <div class="brow"><span class="k">Account</span><span class="v" data-bank="accountNumber">000443540438</span></div>
-                <div class="brow"><span class="k">IBAN</span><span class="v" data-bank="iban">MU13MCBL0944000443540438000MUR</span></div>
-                <div class="brow"><span class="k">SWIFT</span><span class="v" data-bank="swift">MCBLMUMU</span></div>
+              <div class="bank-tba" data-bank-tba>Awaiting organiser bank details / payment instructions by email.</div>
+              <div data-bank-fields class="hidden">
+                <div class="brow"><span class="k">Beneficiary name</span><span class="v" data-bank="beneficiaryName"></span></div>
+                <div class="brow hidden" data-bank-row="chequesPayableTo"><span class="k">Cheques payable to</span><span class="v" data-bank="chequesPayableTo"></span></div>
+                <div class="brow"><span class="k">Bank</span><span class="v" data-bank="bank"></span></div>
+                <div class="brow"><span class="k">Account</span><span class="v" data-bank="accountNumber"></span></div>
+                <div class="brow"><span class="k">IBAN</span><span class="v" data-bank="iban"></span></div>
+                <div class="brow"><span class="k">SWIFT</span><span class="v" data-bank="swift"></span></div>
               </div>
               <div class="ref-box">
                 <div class="k">Your payment reference</div>
                 <div class="v" id="payRef">RTM27-····</div>
               </div>
-              <p class="note">Use your booking reference as the transfer narrative. Deposit and cancellation terms stay TBA. No cards.</p>
+              <p class="note">Use your booking reference as the transfer narrative once instructions arrive. Deposit and cancellation terms stay TBA. No cards.</p>
             </div>
             <div class="pay-steps" data-reveal>
               <div class="pstep">
@@ -497,7 +497,7 @@
                 <div class="n">3</div>
                 <div>
                   <h3>Transfer the amount</h3>
-                  <p>Send the MUR total to the MCB account above, quoting your reference.</p>
+                  <p>When the organisers send MCB details, transfer the MUR total quoting your reference.</p>
                 </div>
               </div>
               <div class="pstep">
@@ -517,7 +517,7 @@
           <div class="center-head">
             <p class="eyebrow" data-reveal>§ 07 — Reserve your place</p>
             <h2 data-reveal>Book the weekend.</h2>
-            <p data-reveal>Tell us who's coming. We'll hold your place, issue a reference, and show the MCB transfer details.</p>
+            <p data-reveal>Tell us who's coming. We'll hold your place, issue a reference, and email payment instructions when the account is published.</p>
           </div>
           <div class="form-shell" data-reveal>
             <div class="summary-mini">
@@ -555,26 +555,26 @@
               </div>
               <p class="form-error hidden" id="formError" role="alert"></p>
               <button class="btn btn-gold" type="submit" id="reserveBtn" aria-describedby="formNote">Reserve my place →</button>
-              <p class="form-note" id="formNote">Reserving issues a unique reference and holds your place as pending payment. Pay only by MCB MUR transfer — no cards.</p>
+              <p class="form-note" id="formNote">Reserving issues a unique reference and holds your place as pending payment. Payment is MCB MUR transfer only — instructions follow by email until the public account is published.</p>
             </form>
             <div class="confirm" id="confirm" role="status" aria-live="polite">
               <div class="tick" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="36" height="36"><path d="M20 6L9 17l-5-5"></path></svg>
               </div>
               <h3 id="confirmHeading">Your place is reserved.</h3>
-              <p>Quote this reference on your MCB transfer. Amount due</p>
+              <p id="confirmLead">Awaiting organiser bank details / payment instructions by email. Amount due</p>
               <div class="ref" id="confirmRef">RTM27-····</div>
               <p class="confirm-amount"><span id="confirmAmount">Rs 29,700</span> · MUR</p>
               <div class="checkout-bank" data-bank-card>
                 <p class="checkout-kicker">Transfer to</p>
-                <div class="bank-tba hidden" data-bank-tba>Account details to be confirmed by organisers</div>
-                <div data-bank-fields>
-                  <div class="brow"><span class="k">Beneficiary name</span><span class="v" data-bank="beneficiaryName">Mauritius Round Table No. 9</span></div>
-                  <div class="brow"><span class="k">Cheques payable to</span><span class="v" data-bank="chequesPayableTo">Round Table 9</span></div>
-                  <div class="brow"><span class="k">Bank</span><span class="v" data-bank="bank">The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis</span></div>
-                  <div class="brow"><span class="k">Account</span><span class="v" data-bank="accountNumber">000443540438</span></div>
-                  <div class="brow"><span class="k">IBAN</span><span class="v" data-bank="iban">MU13MCBL0944000443540438000MUR</span></div>
-                  <div class="brow"><span class="k">SWIFT</span><span class="v" data-bank="swift">MCBLMUMU</span></div>
+                <div class="bank-tba" data-bank-tba>Awaiting organiser bank details / payment instructions by email.</div>
+                <div data-bank-fields class="hidden">
+                  <div class="brow"><span class="k">Beneficiary name</span><span class="v" data-bank="beneficiaryName"></span></div>
+                  <div class="brow hidden" data-bank-row="chequesPayableTo"><span class="k">Cheques payable to</span><span class="v" data-bank="chequesPayableTo"></span></div>
+                  <div class="brow"><span class="k">Bank</span><span class="v" data-bank="bank"></span></div>
+                  <div class="brow"><span class="k">Account</span><span class="v" data-bank="accountNumber"></span></div>
+                  <div class="brow"><span class="k">IBAN</span><span class="v" data-bank="iban"></span></div>
+                  <div class="brow"><span class="k">SWIFT</span><span class="v" data-bank="swift"></span></div>
                 </div>
               </div>
               <div class="checkout-actions">
@@ -718,7 +718,7 @@
             </details>
             <details class="qa">
               <summary>How do I pay, and is my price final?<span class="faqmark">+</span></summary>
-              <div class="a">Payment is by MCB MUR bank transfer only, quoting your booking reference. Beneficiary name: Mauritius Round Table No. 9. Cheques payable to: Round Table 9. Prices are indicative until the event budget and flights are confirmed. Deposit and cancellation terms stay TBA.</div>
+              <div class="a">Payment is by MCB MUR bank transfer only, quoting your booking reference. Account details and payment instructions will be emailed once the organisers publish them. Prices are indicative until the event budget and flights are confirmed. Deposit and cancellation terms stay TBA.</div>
             </details>
           </div>
         </div>

@@ -2,20 +2,36 @@
 
 process.env.NODE_ENV = "test";
 process.env.STORE_DRIVER = "memory";
-process.env.BANK_DETAILS_PUBLIC = "true";
-process.env.BOOKING_NOTIFY_EMAIL = "ishant@ayacorp.io";
+delete process.env.BANK_DETAILS_PUBLIC;
+delete process.env.BOOKING_NOTIFY_EMAIL;
+delete process.env.MCB_ACCOUNT_NAME;
+delete process.env.MCB_BANK;
+delete process.env.MCB_BANK_NAME;
+delete process.env.MCB_ACCOUNT_NUMBER;
+delete process.env.MCB_IBAN;
+delete process.env.MCB_SWIFT;
 delete process.env.RESEND_API_KEY;
 delete process.env.SMTP_HOST;
 delete process.env.ADMIN_TOKEN;
 
+const fs = require("fs");
+const path = require("path");
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const { computeQuote, partnerCost, childCost } = require("../lib/pricing");
 const { allocateRef, isValidRef, slugFromName } = require("../lib/refs");
-const { publicBank, OFFICIAL_BANK, TBA_MESSAGE, notifyEmail } = require("../lib/bank");
+const { publicBank, TBA_MESSAGE, notifyEmail } = require("../lib/bank");
 const { resetStoreForTests, getStore } = require("../lib/store");
 const { createReservation } = require("../api/reserve");
 const { markPaidClaim } = require("../api/booking/paid");
+
+function setProvisionalEnv() {
+  process.env.MCB_ACCOUNT_NAME = "Round Table 9 (Reg. 17280)";
+  process.env.MCB_BANK = "MCB current";
+  process.env.MCB_ACCOUNT_NUMBER = "000443540438";
+  process.env.MCB_IBAN = "MU13MCBL0944000443540438000MUR";
+  process.env.MCB_SWIFT = "MCBLMUMU";
+}
 
 test("indicative ticket maths matches the booking sheet", function () {
   assert.equal(computeQuote({ roomType: "share", kids: 0 }).total, 29700);
@@ -42,33 +58,45 @@ test("refs are RTM27-XXXX-#### and unique", async function () {
   assert.notEqual(second, ref);
 });
 
-test("public bank block uses the MRT 9 MCB strings only", function () {
+test("bank block stays hidden by default even if env has numbers", function () {
+  setProvisionalEnv();
+  process.env.BANK_DETAILS_PUBLIC = "false";
   const bank = publicBank();
+  assert.equal(bank.public, false);
+  assert.equal(bank.confirmed, false);
+  assert.equal(bank.message, TBA_MESSAGE);
+  assert.equal(bank.accountNumber, undefined);
+  assert.doesNotMatch(JSON.stringify(bank), /000443540438/);
+  assert.doesNotMatch(JSON.stringify(bank), /17280/);
+  assert.equal(notifyEmail(), "");
+});
+
+test("server returns env bank block only when BANK_DETAILS_PUBLIC=true", function () {
+  setProvisionalEnv();
+  process.env.BANK_DETAILS_PUBLIC = "true";
+  const bank = publicBank();
+  process.env.BANK_DETAILS_PUBLIC = "false";
   assert.equal(bank.public, true);
-  assert.equal(bank.beneficiaryName, "Mauritius Round Table No. 9");
-  assert.equal(bank.chequesPayableTo, "Round Table 9");
-  assert.equal(bank.bank, "The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis");
+  assert.equal(bank.beneficiaryName, "Round Table 9 (Reg. 17280)");
+  assert.equal(bank.bank, "MCB current");
   assert.equal(bank.accountNumber, "000443540438");
   assert.equal(bank.iban, "MU13MCBL0944000443540438000MUR");
   assert.equal(bank.swift, "MCBLMUMU");
-  assert.equal(bank.labels.beneficiaryName, "Beneficiary name");
-  assert.equal(bank.labels.chequesPayableTo, "Cheques payable to");
-  assert.equal(bank.labels.accountNumber, "Account");
-  assert.equal(bank.labels.swift, "SWIFT");
   assert.doesNotMatch(JSON.stringify(bank), /000011738626/);
-  assert.doesNotMatch(JSON.stringify(bank), /Reg\. 17280/);
-  assert.doesNotMatch(JSON.stringify(bank), /roundtable9\.mu@gmail\.com/);
-  assert.equal(OFFICIAL_BANK.accountNumber, "000443540438");
-  assert.equal(notifyEmail(), "ishant@ayacorp.io");
 });
 
-test("hidden bank details show the TBA message", function () {
-  process.env.BANK_DETAILS_PUBLIC = "false";
-  const bank = publicBank();
-  process.env.BANK_DETAILS_PUBLIC = "true";
-  assert.equal(bank.public, false);
-  assert.equal(bank.message, TBA_MESSAGE);
-  assert.equal(bank.accountNumber, undefined);
+test("client assets do not hardcode MCB account digits", function () {
+  const root = path.join(__dirname, "..");
+  const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+  const js = fs.readFileSync(path.join(root, "js/main.js"), "utf8");
+  const adminJs = fs.readFileSync(path.join(root, "js/admin.js"), "utf8");
+  [html, js, adminJs].forEach(function (src) {
+    assert.doesNotMatch(src, /000443540438/);
+    assert.doesNotMatch(src, /MU13MCBL0944000443540438000MUR/);
+    assert.doesNotMatch(src, /MCBLMUMU/);
+    assert.doesNotMatch(src, /000011738626/);
+    assert.doesNotMatch(src, /Reg\. 17280/);
+  });
 });
 
 test("reserve persists a pending_payment record with a server ref", async function () {
@@ -87,6 +115,7 @@ test("reserve persists a pending_payment record with a server ref", async functi
   assert.ok(stored);
   assert.equal(stored.email, "alex@example.com");
   assert.equal(created.notify.queued, true);
+  assert.equal(created.quote.total, 29700);
 });
 
 test("I've paid moves status to awaiting_verification", async function () {

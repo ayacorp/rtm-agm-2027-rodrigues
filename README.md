@@ -56,23 +56,19 @@ curl -s -X PATCH http://127.0.0.1:4173/api/admin/bookings \
 
 ## Env checklist
 
-Copy [`.env.example`](./.env.example). Shipped public MCB labels:
+Copy [`.env.example`](./.env.example). Provisional MCB settle details are **env/config only**. The public checkout does **not** show them unless `BANK_DETAILS_PUBLIC=true` (default **false**). Client JS/HTML never hardcodes account digits.
 
-| Variable | Shipped value |
+| Variable | Env value (not shown until public) |
 | --- | --- |
-| `BANK_DETAILS_PUBLIC` | `true` |
-| `MCB_ACCOUNT_NAME` | Mauritius Round Table No. 9 |
-| `MCB_CHEQUES_PAYABLE` | Round Table 9 |
-| `MCB_BANK_NAME` | The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis |
+| `BANK_DETAILS_PUBLIC` | `false` (set `true` to publish the bank block) |
+| `MCB_ACCOUNT_NAME` | Round Table 9 (Reg. 17280) |
+| `MCB_BANK` | MCB current (`MCB_BANK_NAME` accepted as alias) |
 | `MCB_ACCOUNT_NUMBER` | `000443540438` |
 | `MCB_IBAN` | `MU13MCBL0944000443540438000MUR` |
 | `MCB_SWIFT` | `MCBLMUMU` |
-| `BOOKING_NOTIFY_EMAIL` | `ishant@ayacorp.io` |
-| `TREASURER_PHONE` | `+230 5906 1912` (treasurer copy only) |
+| `BOOKING_NOTIFY_EMAIL` | empty / TBA — do not invent. CoS candidates: `roundtable9.mu@gmail.com` or treasurer |
 
-If `BANK_DETAILS_PUBLIC` is not true, the UI shows **Account details to be confirmed by organisers** and still allows reserve + ref generation.
-
-Do **not** use RTM national account `000011738626`, “Round Table 9 (Reg. 17280)”, or `roundtable9.mu@gmail.com`.
+When the flag is false, checkout still creates a reservation + server ref and shows **Awaiting organiser bank details / payment instructions by email.** Do **not** use RTM national account `000011738626`.
 
 ### Production store (pick one)
 
@@ -121,4 +117,4 @@ If neither is set, the API queues the message (`data/notify-queue.json` locally,
 
 Prices, inclusions and programme come from those PDFs only. Visual layout follows the Design file (Invitation, Destination, Weekend, Pricing, FAQ, Reserve — lagoon teal, ivory, sand, gold). See `CONTENT.md` for remaining TBA.
 
-Indicative member sharing ticket is **~Rs 29,700**. Payment is MCB MUR transfer to **Mauritius Round Table No. 9** only.
+Indicative member sharing ticket is **~Rs 29,700**. Payment rail is MCB MUR transfer only. Do not invent a deposit. Bank digits stay in env until `BANK_DETAILS_PUBLIC=true`.
