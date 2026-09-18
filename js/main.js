@@ -216,7 +216,14 @@
       const mini = document.querySelector(".summary-mini");
       if (mini) mini.classList.add("hidden");
       const confirm = document.getElementById("confirm");
-      if (confirm) confirm.classList.add("is-on");
+      if (confirm) {
+        confirm.classList.add("is-on");
+        const heading = document.getElementById("confirmHeading");
+        if (heading) {
+          heading.setAttribute("tabindex", "-1");
+          heading.focus();
+        }
+      }
     });
   }
 

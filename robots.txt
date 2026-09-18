@@ -1,2 +1,12 @@
+# Round Table Mauritius AGM 2027 — Cotton Bay, Rodrigues
+# https://rtm-agm-2027-rodrigues.vercel.app/llms.txt
+
 User-agent: *
 Allow: /
+Allow: /llms.txt
+Allow: /sitemap.xml
+Disallow: /content/
+Disallow: /CONTENT.md
+Disallow: /README.md
+
+Sitemap: https://rtm-agm-2027-rodrigues.vercel.app/sitemap.xml

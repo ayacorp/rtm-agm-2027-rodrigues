@@ -1,6 +1,6 @@
 # Photograph credits
 
-Vendor copies live in `assets/images/`. All photographs are of Rodrigues, Mauritius, and are used under Creative Commons licences. Attribution must remain on the public site (see the footer).
+Vendor copies live in `assets/images/` (JPEG plus WebP derivatives of the same frames). All photographs are of Rodrigues, Mauritius, and are used under Creative Commons licences. Attribution must remain on the public site (see the footer).
 
 | File | Source | Author | Licence |
 | --- | --- | --- | --- |
