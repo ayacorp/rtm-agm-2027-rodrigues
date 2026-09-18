@@ -28,13 +28,13 @@ test("indicative ticket maths matches the booking sheet", function () {
 });
 
 test("refs are RTM27-XXXX-#### and unique", async function () {
-  assert.equal(slugFromName("Jean Dupont"), "PONT");
+  assert.equal(slugFromName("Jean Dupont"), "DUPO");
   const seen = new Set();
   const ref = await allocateRef("Marie Laval", function (candidate) {
     assert.equal(isValidRef(candidate), true);
     return seen.has(candidate);
   });
-  assert.match(ref, /^RTM27-LAVAL-\d{4}$/);
+  assert.match(ref, /^RTM27-LAVA-\d{4}$/);
   seen.add(ref);
   const second = await allocateRef("Marie Laval", function (candidate) {
     return seen.has(candidate);
@@ -82,7 +82,7 @@ test("reserve persists a pending_payment record with a server ref", async functi
   });
   assert.equal(created.reservation.status, "pending_payment");
   assert.equal(created.reservation.total, 29700);
-  assert.match(created.reservation.ref, /^RTM27-MOREL-\d{4}$/);
+  assert.match(created.reservation.ref, /^RTM27-MORE-\d{4}$/);
   const stored = await getStore().get(created.reservation.ref);
   assert.ok(stored);
   assert.equal(stored.email, "alex@example.com");
