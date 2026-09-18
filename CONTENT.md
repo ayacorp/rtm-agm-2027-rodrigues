@@ -1,55 +1,51 @@
-# Content checklist — RTM AGM 2027 Rodrigues
+# Content source of truth — RTM AGM 2027 Rodrigues
 
-Public copy on this site uses **locked event facts only**. Everything else is marked **TBA** until source files land in the repo.
+Public copy and figures come from the CoS pack in `/content/` plus the Claude Design HTML. Do **not** invent prices, bank details, or legal terms.
 
-## Locked (already on the site)
+## Locked event facts
 
-- Event: Round Table Mauritius National AGM 2027
-- Dates: **13–16 May 2027** (Thursday–Sunday)
-- Location: **Rodrigues**, Mauritius
-- Audience: Tablers and partners booking the AGM package
-- Brand: Round Table Mauritius only (not Friday Retreats)
+- Round Table Mauritius National AGM 2027
+- Cotton Bay Resort & Spa, Pointe Coton, Rodrigues
+- Thursday 13 – Sunday 16 May 2027 (3 nights)
+- Members-only AGM under an outdoor marquee (~100–150)
+- Partners and children welcome on the trip, not in sessions
+- 4★ beachfront · 88 rooms · up to 4 pax · ~176 adults
+- 25 min from Plaine Corail (RRG)
+- Motto: Adopt · Adapt · Improve
+- Brand: Round Table Mauritius only
 
-## Source files not in the repo yet
+## Published indicative tickets (booking sheet + financials)
 
-Drop these into `/content/` (create the folder) and tick the site updates below. Do **not** invent figures while they are missing.
-
-| Source | Status | Site sections to update |
+| Ticket | Figure | Notes |
 | --- | --- | --- |
-| Claude Design prototype (`RTM AGM 2027 Rodrigues.dc.html`) | Missing (URL needed auth) | Visual tokens, hero composition, component look |
-| Booking sheet | Missing | `#packages` prices, inclusions, extras, currency |
-| 10-page Rodrigues pack | Missing | `#about`, `#travel`, `#stay`, any official island copy |
-| Mindmap | Missing | IA / nav labels if they differ from this outline |
-| Brief | Missing | Tone, organiser names, CTAs, any claims we must not make |
-| Financials-explained | Missing | `#financials` FAQ answers, payment path, refunds |
+| Member — sharing | ~Rs 29,700 | (15,300 + 10,000 + 3,000) × 1.05 |
+| Member — single | ~Rs 35,700 | (21,000 + 10,000 + 3,000) × 1.05 |
+| Companion (no AGM) | ~Rs 25,300 | 15,300 + 10,000 at cost |
+| Child (shares room) | Rs 4,200 + flight | Calculator uses est. Rs 6,000 flight → Rs 10,200 |
 
-## TBA on the live page (do not fill from memory)
+All prices are **indicative and provisional** until the event budget and flights are confirmed.
 
-- [ ] Package prices (Tabler / partner / other)
-- [ ] Currency of invoice
-- [ ] What the package includes (flights, rooms, meals, transfers, gala)
-- [ ] Official venue and hotel block
-- [ ] Day-by-day session times and evening themes
-- [ ] Organiser names, mailbox, phone / WhatsApp
-- [ ] Bank / payment instructions
-- [ ] Cancellation and legal terms
-- [ ] Group flight allotment or meeting point at MRU
-- [ ] Partner programme
-- [ ] Official photography and Round Table Mauritius mark (swap the generic lockup if a licensed logo is supplied)
+## Still TBA on the public site
 
-## Public facts used (not AGM-official)
+- [ ] Final event budget / levy (Rs 3,000 is illustrative)
+- [ ] Child Air Mauritius fare (Rs 6,000 is an estimate)
+- [ ] Bank name, account, IBAN, SWIFT
+- [ ] Deposit amount and due date
+- [ ] Cancellation terms
+- [ ] Lunch: bundle vs add-on
+- [ ] Spa discount exact % (10–30% band only)
+- [ ] Late Sunday checkout in writing (~18:00 asked)
+- [ ] 2027 flight schedule / group fare
+- [ ] Official Cotton Bay photography and past-AGM quote / film
+- [ ] Organiser name (mailbox used: secretary.rtm@gmail.com from the Design brief)
 
-These are general Rodrigues / aviation facts, labelled as such on the travel section:
+## Source files
 
-- MRU (Sir Seewoosagur Ramgoolam) → RRG (Sir Gaëtan Duval / Plaine Corail)
-- Typical nonstop block time ~1 h 35 m, ~600 km
-- Air Mauritius operates the domestic sector
-- Port Mathurin is the capital
-
-Re-check timetables before asserting 2027 frequencies.
-
-## After PDFs land
-
-1. Replace every `TBA` chip that the source now answers.
-2. Keep a changelog line in the PR: file name → section updated.
-3. Never publish a number that is not in a named source file.
+| File | Role |
+| --- | --- |
+| `content/RTM-AGM-2027-Rodrigues-Booking-Sheet.md` / `.pdf` | Public ticket copy |
+| `content/RTM-AGM-2027-Rodrigues-Brief.md` / `.pdf` | Programme, hotel, open items |
+| `content/RTM-AGM-2027-Financials-Explained.pdf` | Calculator maths |
+| `content/RTM-AGM-2027-Rodrigues.pdf` | 10-page pack (venue, weekend, travel) |
+| `content/RTM-AGM-2027-Rodrigues-Mindmap.pdf` | IA check |
+| Claude Design standalone / `.dc.html` | Visual SoT |
