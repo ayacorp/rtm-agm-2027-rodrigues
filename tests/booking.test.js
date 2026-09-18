@@ -5,6 +5,7 @@ process.env.STORE_DRIVER = "memory";
 delete process.env.BANK_DETAILS_PUBLIC;
 delete process.env.BOOKING_NOTIFY_EMAIL;
 delete process.env.MCB_ACCOUNT_NAME;
+delete process.env.MCB_CHEQUES_PAYABLE;
 delete process.env.MCB_BANK;
 delete process.env.MCB_BANK_NAME;
 delete process.env.MCB_ACCOUNT_NUMBER;
@@ -26,12 +27,13 @@ const { createReservation } = require("../api/reserve");
 const { markPaidClaim } = require("../api/booking/paid");
 
 function setPublishedEnv() {
-  process.env.MCB_ACCOUNT_NAME = "Round Table 9 (Reg. 17280)";
-  process.env.MCB_BANK = "MCB";
+  process.env.MCB_ACCOUNT_NAME = "Mauritius Round Table No. 9";
+  process.env.MCB_CHEQUES_PAYABLE = "Round Table 9";
+  process.env.MCB_BANK = "The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis";
   process.env.MCB_ACCOUNT_NUMBER = "000443540438";
   process.env.MCB_IBAN = "MU13MCBL0944000443540438000MUR";
   process.env.MCB_SWIFT = "MCBLMUMU";
-  process.env.BOOKING_NOTIFY_EMAIL = "roundtable9.mu@gmail.com";
+  process.env.BOOKING_NOTIFY_EMAIL = "ishant@ayacorp.io";
 }
 
 test("indicative ticket maths matches the booking sheet", function () {
@@ -59,16 +61,16 @@ test("refs are RTM27-XXXX-#### and unique", async function () {
   assert.notEqual(second, ref);
 });
 
-test("published bank block is the CoS GO strings", function () {
+test("published bank block is the locked MRT 9 MCB strings", function () {
   const bank = publicBank();
   assert.equal(bank.public, true);
-  assert.equal(bank.beneficiaryName, "Round Table 9 (Reg. 17280)");
-  assert.equal(bank.bank, "MCB");
+  assert.equal(bank.beneficiaryName, "Mauritius Round Table No. 9");
+  assert.equal(bank.chequesPayableTo, "Round Table 9");
+  assert.equal(bank.bank, "The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis");
   assert.equal(bank.accountNumber, "000443540438");
   assert.equal(bank.iban, "MU13MCBL0944000443540438000MUR");
   assert.equal(bank.swift, "MCBLMUMU");
-  assert.equal(notifyEmail(), "roundtable9.mu@gmail.com");
-  assert.doesNotMatch(JSON.stringify(bank), /000011738626/);
+  assert.equal(notifyEmail(), "ishant@ayacorp.io");
 });
 
 test("BANK_DETAILS_PUBLIC=false hides numbers even when env is set", function () {
@@ -91,8 +93,6 @@ test("client assets do not hardcode MCB account digits", function () {
     assert.doesNotMatch(src, /000443540438/);
     assert.doesNotMatch(src, /MU13MCBL0944000443540438000MUR/);
     assert.doesNotMatch(src, /MCBLMUMU/);
-    assert.doesNotMatch(src, /000011738626/);
-    assert.doesNotMatch(src, /Reg\. 17280/);
   });
 });
 

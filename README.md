@@ -61,14 +61,16 @@ Copy [`.env.example`](./.env.example). Client HTML/JS do not hardcode account di
 | Variable | Production value |
 | --- | --- |
 | `BANK_DETAILS_PUBLIC` | `true` |
-| `MCB_ACCOUNT_NAME` | Round Table 9 (Reg. 17280) |
-| `MCB_BANK` | MCB |
+| `MCB_ACCOUNT_NAME` | Mauritius Round Table No. 9 |
+| `MCB_CHEQUES_PAYABLE` | Round Table 9 |
+| `MCB_BANK` | The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis |
 | `MCB_ACCOUNT_NUMBER` | `000443540438` |
 | `MCB_IBAN` | `MU13MCBL0944000443540438000MUR` |
 | `MCB_SWIFT` | `MCBLMUMU` |
-| `BOOKING_NOTIFY_EMAIL` | `roundtable9.mu@gmail.com` |
+| `BOOKING_NOTIFY_EMAIL` | `ishant@ayacorp.io` |
+| `TREASURER_PHONE` | `+230 5906 1912` |
 
-Set `BANK_DETAILS_PUBLIC=false` to hide the numbers again (reserve + ref still work). Do **not** use RTM national account `000011738626`.
+Set `BANK_DETAILS_PUBLIC=false` to hide the numbers again (reserve + ref still work).
 
 ### Production store (pick one)
 
@@ -97,16 +99,18 @@ If neither is set, the API queues the message (`data/notify-queue.json` locally,
 
    ```
    BANK_DETAILS_PUBLIC=true
-   MCB_ACCOUNT_NAME=Round Table 9 (Reg. 17280)
-   MCB_BANK=MCB
+   MCB_ACCOUNT_NAME=Mauritius Round Table No. 9
+   MCB_CHEQUES_PAYABLE=Round Table 9
+   MCB_BANK=The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis
    MCB_ACCOUNT_NUMBER=000443540438
    MCB_IBAN=MU13MCBL0944000443540438000MUR
    MCB_SWIFT=MCBLMUMU
-   BOOKING_NOTIFY_EMAIL=roundtable9.mu@gmail.com
+   BOOKING_NOTIFY_EMAIL=ishant@ayacorp.io
+   TREASURER_PHONE=+230 5906 1912
    ```
 
 4. Persistence (required for real production bookings — pick one): `POSTGRES_URL` **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN` **or** `BLOB_READ_WRITE_TOKEN`.
-5. Notifications: `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so new reserves email `roundtable9.mu@gmail.com`. Without mail env the API queues + logs.
+5. Notifications: `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so new reserves email `ishant@ayacorp.io`. Without mail env the API queues + logs.
 6. `ADMIN_TOKEN` for `/admin` and `/api/admin/bookings`. Optional: `BLOB_READ_WRITE_TOKEN` for proof uploads.
 7. Redeploy so the functions pick up the env. Deploy `main` (or this PR for a preview).
 
