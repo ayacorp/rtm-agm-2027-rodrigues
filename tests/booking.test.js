@@ -25,12 +25,13 @@ const { resetStoreForTests, getStore } = require("../lib/store");
 const { createReservation } = require("../api/reserve");
 const { markPaidClaim } = require("../api/booking/paid");
 
-function setProvisionalEnv() {
+function setPublishedEnv() {
   process.env.MCB_ACCOUNT_NAME = "Round Table 9 (Reg. 17280)";
-  process.env.MCB_BANK = "MCB current";
+  process.env.MCB_BANK = "MCB";
   process.env.MCB_ACCOUNT_NUMBER = "000443540438";
   process.env.MCB_IBAN = "MU13MCBL0944000443540438000MUR";
   process.env.MCB_SWIFT = "MCBLMUMU";
+  process.env.BOOKING_NOTIFY_EMAIL = "roundtable9.mu@gmail.com";
 }
 
 test("indicative ticket maths matches the booking sheet", function () {
@@ -58,31 +59,27 @@ test("refs are RTM27-XXXX-#### and unique", async function () {
   assert.notEqual(second, ref);
 });
 
-test("bank block stays hidden by default even if env has numbers", function () {
-  setProvisionalEnv();
-  process.env.BANK_DETAILS_PUBLIC = "false";
+test("published bank block is the CoS GO strings", function () {
   const bank = publicBank();
-  assert.equal(bank.public, false);
-  assert.equal(bank.confirmed, false);
-  assert.equal(bank.message, TBA_MESSAGE);
-  assert.equal(bank.accountNumber, undefined);
-  assert.doesNotMatch(JSON.stringify(bank), /000443540438/);
-  assert.doesNotMatch(JSON.stringify(bank), /17280/);
-  assert.equal(notifyEmail(), "");
-});
-
-test("server returns env bank block only when BANK_DETAILS_PUBLIC=true", function () {
-  setProvisionalEnv();
-  process.env.BANK_DETAILS_PUBLIC = "true";
-  const bank = publicBank();
-  process.env.BANK_DETAILS_PUBLIC = "false";
   assert.equal(bank.public, true);
   assert.equal(bank.beneficiaryName, "Round Table 9 (Reg. 17280)");
-  assert.equal(bank.bank, "MCB current");
+  assert.equal(bank.bank, "MCB");
   assert.equal(bank.accountNumber, "000443540438");
   assert.equal(bank.iban, "MU13MCBL0944000443540438000MUR");
   assert.equal(bank.swift, "MCBLMUMU");
+  assert.equal(notifyEmail(), "roundtable9.mu@gmail.com");
   assert.doesNotMatch(JSON.stringify(bank), /000011738626/);
+});
+
+test("BANK_DETAILS_PUBLIC=false hides numbers even when env is set", function () {
+  setPublishedEnv();
+  process.env.BANK_DETAILS_PUBLIC = "false";
+  const bank = publicBank();
+  delete process.env.BANK_DETAILS_PUBLIC;
+  assert.equal(bank.public, false);
+  assert.equal(bank.message, TBA_MESSAGE);
+  assert.equal(bank.accountNumber, undefined);
+  assert.doesNotMatch(JSON.stringify(bank), /000443540438/);
 });
 
 test("client assets do not hardcode MCB account digits", function () {
@@ -116,6 +113,8 @@ test("reserve persists a pending_payment record with a server ref", async functi
   assert.equal(stored.email, "alex@example.com");
   assert.equal(created.notify.queued, true);
   assert.equal(created.quote.total, 29700);
+  assert.equal(publicBank().public, true);
+  assert.equal(publicBank().accountNumber, "000443540438");
 });
 
 test("I've paid moves status to awaiting_verification", async function () {

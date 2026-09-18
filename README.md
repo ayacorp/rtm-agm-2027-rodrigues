@@ -56,19 +56,19 @@ curl -s -X PATCH http://127.0.0.1:4173/api/admin/bookings \
 
 ## Env checklist
 
-Copy [`.env.example`](./.env.example). Provisional MCB settle details are **env/config only**. The public checkout does **not** show them unless `BANK_DETAILS_PUBLIC=true` (default **false**). Client JS/HTML never hardcodes account digits.
+Copy [`.env.example`](./.env.example). Client HTML/JS do not hardcode account digits — `/api/config` and the reserve response return the bank block when `BANK_DETAILS_PUBLIC=true`.
 
-| Variable | Env value (not shown until public) |
+| Variable | Production value |
 | --- | --- |
-| `BANK_DETAILS_PUBLIC` | `false` (set `true` to publish the bank block) |
+| `BANK_DETAILS_PUBLIC` | `true` |
 | `MCB_ACCOUNT_NAME` | Round Table 9 (Reg. 17280) |
-| `MCB_BANK` | MCB current (`MCB_BANK_NAME` accepted as alias) |
+| `MCB_BANK` | MCB |
 | `MCB_ACCOUNT_NUMBER` | `000443540438` |
 | `MCB_IBAN` | `MU13MCBL0944000443540438000MUR` |
 | `MCB_SWIFT` | `MCBLMUMU` |
-| `BOOKING_NOTIFY_EMAIL` | empty / TBA — do not invent. CoS candidates: `roundtable9.mu@gmail.com` or treasurer |
+| `BOOKING_NOTIFY_EMAIL` | `roundtable9.mu@gmail.com` |
 
-When the flag is false, checkout still creates a reservation + server ref and shows **Awaiting organiser bank details / payment instructions by email.** Do **not** use RTM national account `000011738626`.
+Set `BANK_DETAILS_PUBLIC=false` to hide the numbers again (reserve + ref still work). Do **not** use RTM national account `000011738626`.
 
 ### Production store (pick one)
 
@@ -93,8 +93,22 @@ If neither is set, the API queues the message (`data/notify-queue.json` locally,
 
 1. Import this repo in the [Vercel dashboard](https://vercel.com/new).
 2. Framework preset: **Other** (or Node). Leave **Build Command** and **Output Directory** empty.
-3. Set the env vars above. For production bookings set a real store (`POSTGRES_URL` or KV or Blob) plus `ADMIN_TOKEN` and a notify channel.
-4. Deploy `main` (or this PR for a preview).
+3. **Project → Settings → Environment Variables** — add the same values as `.env.example` for Production (and Preview if you want the bank block on PR deploys):
+
+   ```
+   BANK_DETAILS_PUBLIC=true
+   MCB_ACCOUNT_NAME=Round Table 9 (Reg. 17280)
+   MCB_BANK=MCB
+   MCB_ACCOUNT_NUMBER=000443540438
+   MCB_IBAN=MU13MCBL0944000443540438000MUR
+   MCB_SWIFT=MCBLMUMU
+   BOOKING_NOTIFY_EMAIL=roundtable9.mu@gmail.com
+   ```
+
+4. Persistence (required for real production bookings — pick one): `POSTGRES_URL` **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN` **or** `BLOB_READ_WRITE_TOKEN`.
+5. Notifications: `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so new reserves email `roundtable9.mu@gmail.com`. Without mail env the API queues + logs.
+6. `ADMIN_TOKEN` for `/admin` and `/api/admin/bookings`. Optional: `BLOB_READ_WRITE_TOKEN` for proof uploads.
+7. Redeploy so the functions pick up the env. Deploy `main` (or this PR for a preview).
 
 `vercel.json` sets clean URLs and security headers. Serverless functions in `/api` are included automatically.
 
@@ -117,4 +131,4 @@ If neither is set, the API queues the message (`data/notify-queue.json` locally,
 
 Prices, inclusions and programme come from those PDFs only. Visual layout follows the Design file (Invitation, Destination, Weekend, Pricing, FAQ, Reserve — lagoon teal, ivory, sand, gold). See `CONTENT.md` for remaining TBA.
 
-Indicative member sharing ticket is **~Rs 29,700**. Payment rail is MCB MUR transfer only. Do not invent a deposit. Bank digits stay in env until `BANK_DETAILS_PUBLIC=true`.
+Indicative member sharing ticket is **~Rs 29,700**. Payment rail is MCB MUR transfer only. Do not invent a deposit.
