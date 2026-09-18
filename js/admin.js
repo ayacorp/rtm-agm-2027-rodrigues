@@ -42,15 +42,19 @@
       bodyEl.innerHTML = '<div class="admin-empty">No reservations yet.</div>';
       return;
     }
-    bodyEl.innerHTML = '<table><thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>'
+    bodyEl.innerHTML = '<table><thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Total</th><th>Status</th><th>Proof</th><th></th></tr></thead><tbody>'
       + rows.map(function (row) {
         const paidBtn = row.status === "paid"
           ? ""
           : '<button class="btn btn-gold" type="button" data-mark="' + escapeHtml(row.ref) + '">Mark paid</button>';
+        const proof = row.proofUrl
+          ? '<a href="' + escapeHtml(row.proofUrl) + '" target="_blank" rel="noopener noreferrer">View</a>'
+          : "—";
         return "<tr><td class=\"ref\">" + escapeHtml(row.ref) + "</td><td>"
           + escapeHtml(row.name) + "<br><small>" + escapeHtml(row.email) + " · " + escapeHtml(row.phone || "—") + "</small></td><td>"
           + escapeHtml(row.roomType) + " · kids " + escapeHtml(row.kids) + "</td><td>"
           + fmt(row.total) + "</td><td class=\"status\">" + escapeHtml(row.status) + "</td><td>"
+          + proof + "</td><td>"
           + paidBtn + "</td></tr>";
       }).join("")
       + "</tbody></table>";

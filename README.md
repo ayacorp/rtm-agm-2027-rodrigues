@@ -22,7 +22,7 @@ npm run dev
 
 Open `http://127.0.0.1:4173`. Copy `.env.example` to `.env` for local overrides.
 
-Without `POSTGRES_URL`, KV, or Blob credentials the API writes `data/bookings.json`. That file store is a **dev fallback**, not production.
+Without `POSTGRES_URL` or KV credentials the API writes `data/bookings.json` locally. That file store is a **local-only fallback**, not production. On Vercel it becomes `/tmp` and reservations disappear between deploys.
 
 ## Booking API
 
@@ -72,20 +72,21 @@ Copy [`.env.example`](./.env.example). Client HTML/JS do not hardcode account di
 
 Set `BANK_DETAILS_PUBLIC=false` to hide the numbers again (reserve + ref still work).
 
-### Production store (pick one)
+### Production MUST set
 
-- **Preferred:** `POSTGRES_URL` (Vercel Postgres / Neon)
-- or `KV_REST_API_URL` + `KV_REST_API_TOKEN` (Vercel KV)
-- or `BLOB_READ_WRITE_TOKEN` (JSON index on Vercel Blob)
+Production is not ready until these are on the Vercel project (Production + Preview), then redeploy:
 
-`BLOB_READ_WRITE_TOKEN` is also required for proof uploads. Optional: `STORE_DRIVER=postgres|kv|blob|file|memory`.
+1. **Bookings (durable store) — pick one**
+   - **Preferred:** `POSTGRES_URL` (Neon or Vercel Postgres). `DATABASE_URL` is accepted as an alias.
+   - or `KV_REST_API_URL` + `KV_REST_API_TOKEN` (Vercel KV)
+2. **Proof upload:** `BLOB_READ_WRITE_TOKEN` (Vercel Blob). `/api/config` reports `proofUpload: true` only when this is set. The checkout form then posts to `/api/booking/proof`.
+3. **Notify** `ishant@ayacorp.io`: `RESEND_API_KEY` + `RESEND_FROM` (or `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM`)
+
+Optional: `STORE_DRIVER=postgres|kv|blob|file|memory` (auto-detect prefers Postgres, then KV, then local file). Blob is for proof files, not the booking index.
 
 ### Notifications
 
-- `RESEND_API_KEY` + `RESEND_FROM`, or
-- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM`
-
-If neither is set, the API queues the message (`data/notify-queue.json` locally, `/tmp` on Vercel) and logs it.
+If Resend/SMTP is missing, the API queues the message (`data/notify-queue.json` locally, `/tmp` on Vercel) and logs it. That is not production.
 
 ### Admin
 
@@ -109,10 +110,11 @@ If neither is set, the API queues the message (`data/notify-queue.json` locally,
    TREASURER_PHONE=+230 5906 1912
    ```
 
-4. Persistence (required for real production bookings — pick one): `POSTGRES_URL` **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN` **or** `BLOB_READ_WRITE_TOKEN`.
-5. Notifications: `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so new reserves email `ishant@ayacorp.io`. Without mail env the API queues + logs.
-6. `ADMIN_TOKEN` for `/admin` and `/api/admin/bookings`. Optional: `BLOB_READ_WRITE_TOKEN` for proof uploads.
-7. Redeploy so the functions pick up the env. Deploy `main` (or this PR for a preview).
+4. **MUST** set a durable store: `POSTGRES_URL` (preferred) **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN`. File/`/tmp` is local-only.
+5. **MUST** set `BLOB_READ_WRITE_TOKEN` so checkout proof upload is enabled (`proofUpload: true`).
+6. **MUST** set `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so reserves and “I’ve paid” email `ishant@ayacorp.io`.
+7. `ADMIN_TOKEN` for `/admin` and `/api/admin/bookings`.
+8. Redeploy so the functions pick up the env. Deploy `main` (or this PR for a preview).
 
 `vercel.json` sets clean URLs and security headers. Serverless functions in `/api` are included automatically.
 

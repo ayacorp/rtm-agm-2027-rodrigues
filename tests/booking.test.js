@@ -22,9 +22,11 @@ const assert = require("node:assert/strict");
 const { computeQuote, partnerCost, childCost } = require("../lib/pricing");
 const { allocateRef, isValidRef, slugFromName } = require("../lib/refs");
 const { publicBank, TBA_MESSAGE, notifyEmail } = require("../lib/bank");
-const { resetStoreForTests, getStore } = require("../lib/store");
+const { resetStoreForTests, getStore, detectDriver } = require("../lib/store");
+const { blobConfigured, uploadProof, setBlobPutForTests, resetProofForTests } = require("../lib/proof");
 const { createReservation } = require("../api/reserve");
 const { markPaidClaim } = require("../api/booking/paid");
+const { submitProof } = require("../api/booking/proof");
 
 function setPublishedEnv() {
   process.env.MCB_ACCOUNT_NAME = "Mauritius Round Table No. 9";
@@ -115,6 +117,98 @@ test("reserve persists a pending_payment record with a server ref", async functi
   assert.equal(created.quote.total, 29700);
   assert.equal(publicBank().public, true);
   assert.equal(publicBank().accountNumber, "000443540438");
+});
+
+test("detectDriver prefers POSTGRES_URL and does not treat Blob as the booking store", function () {
+  const prev = {
+    STORE_DRIVER: process.env.STORE_DRIVER,
+    POSTGRES_URL: process.env.POSTGRES_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
+    KV_REST_API_URL: process.env.KV_REST_API_URL,
+    KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL: process.env.VERCEL,
+  };
+  function restore() {
+    Object.keys(prev).forEach(function (key) {
+      if (prev[key] == null) delete process.env[key];
+      else process.env[key] = prev[key];
+    });
+  }
+  try {
+    delete process.env.STORE_DRIVER;
+    delete process.env.KV_REST_API_URL;
+    delete process.env.KV_REST_API_TOKEN;
+    delete process.env.VERCEL;
+    process.env.NODE_ENV = "production";
+    process.env.POSTGRES_URL = "postgresql://user:pass@localhost/rtm";
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_test";
+    assert.equal(detectDriver(), "postgres");
+
+    delete process.env.POSTGRES_URL;
+    delete process.env.DATABASE_URL;
+    assert.equal(detectDriver(), "file");
+
+    process.env.NODE_ENV = "test";
+    assert.equal(detectDriver(), "memory");
+  } finally {
+    restore();
+  }
+});
+
+test("proof upload is enabled only when BLOB_READ_WRITE_TOKEN is set", async function () {
+  const prev = process.env.BLOB_READ_WRITE_TOKEN;
+  delete process.env.BLOB_READ_WRITE_TOKEN;
+  try {
+    assert.equal(blobConfigured(), false);
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_test";
+    assert.equal(blobConfigured(), true);
+    setBlobPutForTests(async function (pathname, data, options) {
+      assert.match(pathname, /^proofs\/RTM27-TEST-0001-\d+\.png$/);
+      assert.equal(options.access, "public");
+      assert.equal(options.token, "vercel_blob_rw_test");
+      assert.ok(Buffer.isBuffer(data));
+      return { url: "https://example.public.blob.vercel-storage.com/" + pathname };
+    });
+    const url = await uploadProof("RTM27-TEST-0001", {
+      filename: "slip.png",
+      contentType: "image/png",
+      data: Buffer.from("fake-png"),
+    });
+    assert.match(url, /https:\/\/example\.public\.blob\.vercel-storage\.com\/proofs\//);
+  } finally {
+    resetProofForTests();
+    if (prev == null) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = prev;
+  }
+});
+
+test("proof submit stores URL and moves status to awaiting_verification", async function () {
+  resetStoreForTests();
+  const prev = process.env.BLOB_READ_WRITE_TOKEN;
+  process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_test";
+  setBlobPutForTests(async function () {
+    return { url: "https://example.public.blob.vercel-storage.com/proofs/demo.png" };
+  });
+  try {
+    const created = await createReservation({
+      name: "Priya Shah",
+      email: "priya@example.com",
+      roomType: "share",
+      kids: 0,
+    });
+    const result = await submitProof(
+      { ref: created.reservation.ref, email: "priya@example.com" },
+      { filename: "slip.png", contentType: "image/png", data: Buffer.from("fake-png") }
+    );
+    assert.equal(result.reservation.status, "awaiting_verification");
+    assert.equal(result.reservation.proofUrl, "https://example.public.blob.vercel-storage.com/proofs/demo.png");
+  } finally {
+    resetProofForTests();
+    if (prev == null) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = prev;
+  }
 });
 
 test("I've paid moves status to awaiting_verification", async function () {

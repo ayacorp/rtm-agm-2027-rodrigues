@@ -22,7 +22,7 @@
   let reservedEmail = "";
   let displayTotal = 29700;
   let raf = 0;
-  let proofEnabled = true;
+  let proofEnabled = false;
 
   const $ = function (sel) {
     return document.querySelector(sel);
@@ -327,6 +327,23 @@
   const proofForm = document.getElementById("proofForm");
   const proofFile = document.getElementById("proofFile");
   const proofBtn = document.getElementById("proofBtn");
+  const proofLabel = proofForm ? proofForm.querySelector("label") : null;
+
+  function setProofEnabled(enabled) {
+    proofEnabled = Boolean(enabled);
+    if (!proofForm) return;
+    proofForm.classList.toggle("is-unavailable", !proofEnabled);
+    if (proofFile) proofFile.disabled = !proofEnabled;
+    if (proofBtn) proofBtn.disabled = !proofEnabled;
+    if (proofLabel) {
+      proofLabel.textContent = proofEnabled
+        ? "Transfer proof (optional)"
+        : "Transfer proof (optional — upload opens once Blob storage is configured)";
+    }
+  }
+
+  setProofEnabled(false);
+
   if (proofForm) {
     proofForm.addEventListener("submit", function (event) {
       event.preventDefault();
@@ -347,17 +364,20 @@
         proofBtn.disabled = true;
         proofBtn.textContent = "Uploading…";
       }
-      fetchJson("/api/booking/proof", { method: "POST", body: body }).then(function () {
+      fetchJson("/api/booking/proof", { method: "POST", body: body }).then(function (payload) {
         setPaidStatus("Proof received — awaiting verification.");
         if (paidBtn) {
           paidBtn.disabled = true;
           paidBtn.textContent = "Awaiting verification";
         }
+        if (payload.reservation && payload.reservation.proofUrl) {
+          setPaidStatus("Proof received — awaiting verification. Organisers have the file.");
+        }
       }).catch(function (err) {
         setPaidStatus(err.message || "Could not upload proof.");
       }).finally(function () {
         if (proofBtn) {
-          proofBtn.disabled = false;
+          proofBtn.disabled = !proofEnabled;
           proofBtn.textContent = "Upload proof";
         }
       });
@@ -366,14 +386,10 @@
 
   fetchJson("/api/config").then(function (payload) {
     if (payload.bank) applyBank(payload.bank);
-    proofEnabled = Boolean(payload.proofUpload);
-    if (!proofEnabled && proofForm) {
-      proofForm.classList.add("is-unavailable");
-      const label = proofForm.querySelector("label");
-      if (label) label.textContent = "Transfer proof (optional — upload opens once Blob storage is configured)";
-    }
+    setProofEnabled(Boolean(payload.proofUpload));
   }).catch(function () {
     applyBank({ public: false, confirmed: false });
+    setProofEnabled(false);
   });
 
   const nav = document.querySelector("[data-nav]");

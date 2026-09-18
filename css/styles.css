@@ -1259,6 +1259,12 @@ h3 { font-family: var(--disp); font-weight: 500; }
 .checkout-actions .btn-ghost,
 .checkout-actions .btn-gold { width: 100%; }
 
+.checkout-actions form.is-unavailable input,
+.checkout-actions form.is-unavailable button {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .checkout-status {
   min-height: 1.4em;
   font-size: 14px !important;

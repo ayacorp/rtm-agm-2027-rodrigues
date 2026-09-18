@@ -97,7 +97,10 @@ const port = Number(process.env.PORT || 4173);
 server.listen(port, "127.0.0.1", function () {
   console.log("RTM AGM 2027 local server → http://127.0.0.1:" + port);
   console.log("Store driver:", process.env.STORE_DRIVER || "(auto)");
-  if (!process.env.POSTGRES_URL && !process.env.KV_REST_API_URL && !process.env.BLOB_READ_WRITE_TOKEN) {
-    console.log("No production store env — using local data/bookings.json (not for production).");
+  if (!process.env.POSTGRES_URL && !process.env.DATABASE_URL && !process.env.KV_REST_API_URL) {
+    console.log("No POSTGRES_URL / KV — using local data/bookings.json (local-only fallback).");
+  }
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.log("No BLOB_READ_WRITE_TOKEN — proof upload stays disabled.");
   }
 });
