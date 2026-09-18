@@ -8,5 +8,8 @@ Allow: /sitemap.xml
 Disallow: /content/
 Disallow: /CONTENT.md
 Disallow: /README.md
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /api/
 
 Sitemap: https://rtm-agm-2027-rodrigues.vercel.app/sitemap.xml

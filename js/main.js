@@ -19,8 +19,10 @@
 
   const state = { room: "share", kids: 0 };
   let currentRef = "";
+  let reservedEmail = "";
   let displayTotal = 29700;
   let raf = 0;
+  let proofEnabled = true;
 
   const $ = function (sel) {
     return document.querySelector(sel);
@@ -45,9 +47,40 @@
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
-  function makeRef(name) {
-    const s = (name || "").trim().split(/\s+/).pop().replace(/[^a-z]/gi, "").slice(0, 4).toUpperCase() || "AGM";
-    return "RTM27-" + s + "-" + Math.floor(1000 + Math.random() * 9000);
+  function applyBank(bank) {
+    const publicDetails = bank && bank.public && bank.confirmed;
+    document.querySelectorAll("[data-bank-card]").forEach(function (card) {
+      const tba = card.querySelector("[data-bank-tba]");
+      const fields = card.querySelector("[data-bank-fields]");
+      if (tba) tba.classList.toggle("hidden", Boolean(publicDetails));
+      if (fields) fields.classList.toggle("hidden", !publicDetails);
+      if (!publicDetails) return;
+      card.querySelectorAll("[data-bank]").forEach(function (el) {
+        const key = el.getAttribute("data-bank");
+        if (bank[key]) el.textContent = bank[key];
+      });
+    });
+  }
+
+  function showError(message) {
+    const el = document.getElementById("formError");
+    if (!el) return;
+    el.textContent = message || "";
+    el.classList.toggle("hidden", !message);
+  }
+
+  async function fetchJson(url, options) {
+    const res = await fetch(url, options);
+    let payload = {};
+    try {
+      payload = await res.json();
+    } catch (err) {
+      payload = {};
+    }
+    if (!res.ok) {
+      throw new Error(payload.error || "Request failed");
+    }
+    return payload;
   }
 
   function compute() {
@@ -189,43 +222,154 @@
   if (kidMinus) kidMinus.addEventListener("click", function () { setKids(-1); });
   if (kidPlus) kidPlus.addEventListener("click", function () { setKids(1); });
 
-  const nameInput = document.getElementById("fName");
-  if (nameInput) {
-    nameInput.addEventListener("input", function () {
-      if (nameInput.value.trim().length > 1 && !currentRef) currentRef = makeRef(nameInput.value);
-      const shown = currentRef || "RTM27-····";
-      setText("smRef", shown);
-      setText("payRef", shown);
-    });
+  function showCheckout(reservation, bank) {
+    currentRef = reservation.ref;
+    reservedEmail = reservation.email;
+    setText("confirmRef", reservation.ref);
+    setText("payRef", reservation.ref);
+    setText("smRef", reservation.ref);
+    setText("confirmAmount", fmt(reservation.total));
+    applyBank(bank);
+    if (form) form.classList.add("hidden");
+    const mini = document.querySelector(".summary-mini");
+    if (mini) mini.classList.add("hidden");
+    const confirm = document.getElementById("confirm");
+    if (confirm) confirm.classList.add("is-on");
+    const heading = document.getElementById("confirmHeading");
+    if (heading) {
+      heading.setAttribute("tabindex", "-1");
+      heading.focus();
+    }
   }
 
   const form = document.getElementById("bookForm");
+  const reserveBtn = document.getElementById("reserveBtn");
   if (form) {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      const name = String(new FormData(form).get("name") || "").trim();
-      const email = String(new FormData(form).get("email") || "").trim();
+      showError("");
+      const data = new FormData(form);
+      const name = String(data.get("name") || "").trim();
+      const email = String(data.get("email") || "").trim();
       if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         form.reportValidity();
         return;
       }
-      if (!currentRef) currentRef = makeRef(name);
-      setText("confirmRef", currentRef);
-      setText("payRef", currentRef);
-      form.classList.add("hidden");
-      const mini = document.querySelector(".summary-mini");
-      if (mini) mini.classList.add("hidden");
-      const confirm = document.getElementById("confirm");
-      if (confirm) {
-        confirm.classList.add("is-on");
-        const heading = document.getElementById("confirmHeading");
-        if (heading) {
-          heading.setAttribute("tabindex", "-1");
-          heading.focus();
-        }
+      if (reserveBtn) {
+        reserveBtn.disabled = true;
+        reserveBtn.textContent = "Reserving…";
       }
+      fetchJson("/api/reserve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: String(data.get("phone") || "").trim(),
+          table: String(data.get("table") || "").trim(),
+          companions: String(data.get("companions") || "").trim(),
+          notes: String(data.get("notes") || "").trim(),
+          roomType: state.room,
+          kids: state.kids,
+        }),
+      }).then(function (payload) {
+        showCheckout(payload.reservation, payload.bank);
+      }).catch(function (err) {
+        showError(err.message || "Could not reserve just now.");
+      }).finally(function () {
+        if (reserveBtn) {
+          reserveBtn.disabled = false;
+          reserveBtn.textContent = "Reserve my place →";
+        }
+      });
     });
   }
+
+  const paidBtn = document.getElementById("paidBtn");
+  const paidStatus = document.getElementById("paidStatus");
+  function setPaidStatus(message) {
+    if (paidStatus) paidStatus.textContent = message || "";
+  }
+
+  if (paidBtn) {
+    paidBtn.addEventListener("click", function () {
+      if (!currentRef || !reservedEmail) return;
+      paidBtn.disabled = true;
+      setPaidStatus("Recording your payment…");
+      fetchJson("/api/booking/paid", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ref: currentRef, email: reservedEmail }),
+      }).then(function () {
+        setPaidStatus("Marked as paid — awaiting verification by the organisers.");
+        paidBtn.textContent = "Awaiting verification";
+      }).catch(function (err) {
+        paidBtn.disabled = false;
+        setPaidStatus(err.message || "Could not record payment.");
+      });
+    });
+  }
+
+  const proofForm = document.getElementById("proofForm");
+  const proofFile = document.getElementById("proofFile");
+  const proofBtn = document.getElementById("proofBtn");
+  if (proofForm) {
+    proofForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!currentRef || !reservedEmail) return;
+      if (!proofEnabled) {
+        setPaidStatus("Proof upload is not configured yet. Use I've paid instead.");
+        return;
+      }
+      if (!proofFile || !proofFile.files || !proofFile.files[0]) {
+        setPaidStatus("Choose a transfer screenshot or PDF first.");
+        return;
+      }
+      const body = new FormData();
+      body.append("ref", currentRef);
+      body.append("email", reservedEmail);
+      body.append("proof", proofFile.files[0]);
+      if (proofBtn) {
+        proofBtn.disabled = true;
+        proofBtn.textContent = "Uploading…";
+      }
+      fetchJson("/api/booking/proof", { method: "POST", body: body }).then(function () {
+        setPaidStatus("Proof received — awaiting verification.");
+        if (paidBtn) {
+          paidBtn.disabled = true;
+          paidBtn.textContent = "Awaiting verification";
+        }
+      }).catch(function (err) {
+        setPaidStatus(err.message || "Could not upload proof.");
+      }).finally(function () {
+        if (proofBtn) {
+          proofBtn.disabled = false;
+          proofBtn.textContent = "Upload proof";
+        }
+      });
+    });
+  }
+
+  fetchJson("/api/config").then(function (payload) {
+    if (payload.bank) applyBank(payload.bank);
+    proofEnabled = Boolean(payload.proofUpload);
+    if (!proofEnabled && proofForm) {
+      proofForm.classList.add("is-unavailable");
+      const label = proofForm.querySelector("label");
+      if (label) label.textContent = "Transfer proof (optional — upload opens once Blob storage is configured)";
+    }
+  }).catch(function () {
+    applyBank({
+      public: true,
+      confirmed: true,
+      beneficiaryName: "Mauritius Round Table No. 9",
+      chequesPayableTo: "Round Table 9",
+      bank: "The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis",
+      accountNumber: "000443540438",
+      iban: "MU13MCBL0944000443540438000MUR",
+      swift: "MCBLMUMU",
+    });
+  });
 
   const nav = document.querySelector("[data-nav]");
   const toggle = document.querySelector("[data-nav-toggle]");

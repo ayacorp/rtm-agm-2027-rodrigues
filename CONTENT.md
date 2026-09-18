@@ -29,7 +29,7 @@ All prices are **indicative and provisional** until the event budget and flights
 
 - [ ] Final event budget / levy (Rs 3,000 is illustrative)
 - [ ] Child Air Mauritius fare (Rs 6,000 is an estimate)
-- [ ] Bank name, account, IBAN, SWIFT
+- [x] Bank — MCB MUR transfer to Mauritius Round Table No. 9 (account 000443540438). Not the RTM national account.
 - [ ] Deposit amount and due date
 - [ ] Cancellation terms
 - [ ] Lunch: bundle vs add-on
