@@ -28,8 +28,23 @@ Open `http://localhost:4173`.
 
 `vercel.json` sets clean URLs and security headers.
 
+## Sources
+
+**Visual SoT — Claude Design**
+
+- Prototype: https://claude.ai/design/p/3d09c702-19b4-4226-8974-6f8bd36a04d3
+- File: `RTM AGM 2027 Rodrigues.dc.html`
+- Full: https://claude.ai/design/p/3d09c702-19b4-4226-8974-6f8bd36a04d3?file=RTM%20AGM%202027%20Rodrigues.dc.html
+
+**Learn-from (structure/UX, not copy)**
+
+- https://www.trl.lu/en/
+- https://rtihym2027.ch/
+
+**Content SoT** — CoS PDFs in `/content/` (booking sheet, 10-page pack, mindmap, brief, financials).
+
 ## Content rules
 
-Prices, inclusions and programme come from the CoS PDFs in `/content/`. Visual layout follows the Claude Design standalone (Invitation, Destination, Weekend, Pricing, FAQ, Reserve — lagoon teal, ivory, sand, gold). See `CONTENT.md` for remaining TBA.
+Prices, inclusions and programme come from those PDFs only. Visual layout follows the Design file (Invitation, Destination, Weekend, Pricing, FAQ, Reserve — lagoon teal, ivory, sand, gold). See `CONTENT.md` for remaining TBA.
 
 Indicative member sharing ticket is **~Rs 29,700**. Do not invent bank details or a deposit.

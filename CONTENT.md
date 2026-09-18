@@ -48,4 +48,14 @@ All prices are **indicative and provisional** until the event budget and flights
 | `content/RTM-AGM-2027-Financials-Explained.pdf` | Calculator maths |
 | `content/RTM-AGM-2027-Rodrigues.pdf` | 10-page pack (venue, weekend, travel) |
 | `content/RTM-AGM-2027-Rodrigues-Mindmap.pdf` | IA check |
-| Claude Design standalone / `.dc.html` | Visual SoT |
+| Claude Design `RTM AGM 2027 Rodrigues.dc.html` | Visual SoT |
+
+Design URLs (canonical — ignore any garbled links):
+
+- https://claude.ai/design/p/3d09c702-19b4-4226-8974-6f8bd36a04d3
+- https://claude.ai/design/p/3d09c702-19b4-4226-8974-6f8bd36a04d3?file=RTM%20AGM%202027%20Rodrigues.dc.html
+
+Learn-from UX (not copy):
+
+- https://www.trl.lu/en/
+- https://rtihym2027.ch/

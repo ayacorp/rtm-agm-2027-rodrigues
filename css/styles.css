@@ -746,6 +746,22 @@ h3 { font-family: var(--disp); font-weight: 500; }
   border-radius: 50%;
 }
 
+/* Travel — HYM-style logistics, Design tokens */
+.travel { background: var(--ivory); color: var(--ink); }
+.travel .eyebrow { color: var(--ocean); }
+.travel h2 { color: var(--teal); }
+.travel-grid {
+  background: rgba(12, 90, 114, 0.14);
+  border-color: rgba(12, 90, 114, 0.14);
+}
+.travel-card {
+  background: var(--ivory);
+}
+.travel-card h3 { color: var(--teal); }
+.travel-card p { color: var(--muted); }
+.travel-card .inc-num { color: var(--gold); }
+.travel-card .inc-num::after { background: rgba(201, 162, 75, 0.35); }
+
 /* Pricing */
 .pricing { background: var(--teal); color: var(--white); }
 
