@@ -211,6 +211,31 @@ test("proof submit stores URL and moves status to awaiting_verification", async 
   }
 });
 
+test("proof submit without Blob token is 503", async function () {
+  resetStoreForTests();
+  resetProofForTests();
+  const prev = process.env.BLOB_READ_WRITE_TOKEN;
+  delete process.env.BLOB_READ_WRITE_TOKEN;
+  const created = await createReservation({
+    name: "No Blob",
+    email: "noblob@example.com",
+    roomType: "share",
+  });
+  try {
+    await submitProof(
+      { ref: created.reservation.ref, email: "noblob@example.com" },
+      { filename: "slip.png", contentType: "image/png", data: Buffer.from("fake-png") }
+    );
+    assert.fail("expected 503");
+  } catch (err) {
+    assert.equal(err.statusCode, 503);
+    assert.match(err.message, /BLOB_READ_WRITE_TOKEN/);
+  } finally {
+    if (prev == null) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = prev;
+  }
+});
+
 test("I've paid moves status to awaiting_verification", async function () {
   resetStoreForTests();
   const created = await createReservation({
