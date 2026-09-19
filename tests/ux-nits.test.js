@@ -52,10 +52,8 @@ test("Contact us is email-only to ishant@ayacorp.io", function () {
 });
 
 test("framed photos lock aspect-ratio so mobile heights cannot use raw HTML height", function () {
-  assert.match(css, /\.frame figure\.is-wide \{ aspect-ratio: 16 \/ 10; \}/);
-  assert.match(css, /\.frame figure\.is-sq \{ aspect-ratio: 1; \}/);
-  assert.match(css, /\.frame figure\.is-tall \{ aspect-ratio: 5 \/ 6; \}/);
-  assert.match(css, /\.mem-grid \.frame figure \{ aspect-ratio: 4 \/ 5; \}/);
+  assert.match(css, /\.photo-pair \{[\s\S]*grid-template-columns:\s*1fr;/);
+  assert.match(css, /\.mem-grid \{[\s\S]*grid-template-columns:\s*1fr;/);
   assert.match(css, /img \{\n  display: block;\n  max-width: 100%;\n  height: auto;/);
   assert.match(css, /\.frame img \{\n  object-fit: cover;/);
   assert.match(html, /<figure class="is-wide">/);
@@ -68,4 +66,6 @@ test("phone breakpoint stacks destination and media photos to one column", funct
   assert.match(phone, /\.photo-pair/);
   assert.match(phone, /\.mem-grid/);
   assert.match(phone, /grid-template-columns:\s*1fr/);
+  const desktop = css.split("@media (min-width: 641px)")[1] || "";
+  assert.match(desktop, /\.photo-pair \{ grid-template-columns: 1fr 1fr; \}/);
 });

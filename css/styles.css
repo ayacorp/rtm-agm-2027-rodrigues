@@ -612,7 +612,11 @@ h3 { font-family: var(--disp); font-weight: 500; }
 .stats span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
 
 .photo-grid { display: grid; gap: 16px; }
-.photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.photo-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
 
 .frame { padding: 7px; border: 1px solid rgba(201, 162, 75, 0.4); }
 
@@ -624,9 +628,9 @@ h3 { font-family: var(--disp); font-weight: 500; }
   background: linear-gradient(135deg, var(--teal), var(--ocean));
 }
 
-.frame figure.is-wide { aspect-ratio: 16 / 10; }
-.frame figure.is-sq { aspect-ratio: 1; }
-.frame figure.is-tall { aspect-ratio: 5 / 6; }
+.frame figure.is-wide,
+.frame figure.is-sq,
+.frame figure.is-tall { aspect-ratio: 16 / 10; }
 
 .frame picture,
 .frame img {
@@ -640,9 +644,9 @@ h3 { font-family: var(--disp); font-weight: 500; }
   object-position: center;
 }
 
-.frame .wide { aspect-ratio: 16 / 10; }
-.frame .sq { aspect-ratio: 1; }
-.frame .tall { aspect-ratio: 5 / 6; }
+.frame .wide,
+.frame .sq,
+.frame .tall { aspect-ratio: 16 / 10; }
 
 .frame figcaption {
   position: absolute;
@@ -1476,7 +1480,7 @@ h3 { font-family: var(--disp); font-weight: 500; }
 
 .mem-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  grid-template-columns: 1fr;
   gap: clamp(14px, 2vw, 20px);
 }
 
@@ -1513,8 +1517,8 @@ h3 { font-family: var(--disp); font-weight: 500; }
 }
 
 .mem-grid .frame { padding: 6px; }
-.mem-grid .frame figure { aspect-ratio: 4 / 5; }
-.mem-grid .frame img { aspect-ratio: 4 / 5; }
+.mem-grid .frame figure,
+.mem-grid .frame img { aspect-ratio: 16 / 10; }
 
 /* FAQ */
 .faq { background: var(--sand); color: var(--ink); }
@@ -1754,14 +1758,21 @@ h3 { font-family: var(--disp); font-weight: 500; }
     padding: 0;
     width: 100%;
   }
+}
+
+@media (min-width: 641px) {
+  .photo-pair { grid-template-columns: 1fr 1fr; }
   .frame figure.is-sq,
+  .frame .sq { aspect-ratio: 1; }
   .frame figure.is-tall,
-  .frame .sq,
-  .frame .tall,
+  .frame .tall { aspect-ratio: 5 / 6; }
+  .mem-grid { grid-template-columns: repeat(2, 1fr); }
   .mem-grid .frame figure,
-  .mem-grid .frame img {
-    aspect-ratio: 16 / 10;
-  }
+  .mem-grid .frame img { aspect-ratio: 4 / 5; }
+}
+
+@media (min-width: 900px) {
+  .mem-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
