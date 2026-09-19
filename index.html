@@ -20,10 +20,10 @@
       content="Three nights at Cotton Bay Resort &amp; Spa. A Tablers' meeting under an island sky — partners and children welcome."
     />
     <meta property="og:image" content="https://rtm-agm-2027-rodrigues.vercel.app/assets/images/hero-beach.jpg" />
-    <meta property="og:image:alt" content="White-sand beach on Rodrigues" />
+    <meta property="og:image:alt" content="The beach at Cotton Bay Resort &amp; Spa, Pointe Coton, Rodrigues" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1920" />
-    <meta property="og:image:height" content="1275" />
+    <meta property="og:image:height" content="1281" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Round Table Mauritius AGM 2027 | Cotton Bay, Rodrigues, 13–16 May" />
     <meta
@@ -31,7 +31,7 @@
       content="Three nights at Cotton Bay Resort &amp; Spa. A Tablers' meeting under an island sky — partners and children welcome."
     />
     <meta name="twitter:image" content="https://rtm-agm-2027-rodrigues.vercel.app/assets/images/hero-beach.jpg" />
-    <meta name="twitter:image:alt" content="White-sand beach on Rodrigues" />
+    <meta name="twitter:image:alt" content="The beach at Cotton Bay Resort &amp; Spa, Pointe Coton, Rodrigues" />
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" as="image" href="/assets/images/hero-beach.webp" type="image/webp" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -88,9 +88,9 @@
             <source type="image/webp" srcset="/assets/images/hero-beach.webp" />
             <img
               src="/assets/images/hero-beach.jpg"
-              alt="White-sand beach on Rodrigues"
+              alt="Walking the beach at Cotton Bay Resort &amp; Spa, Pointe Coton, Rodrigues"
               width="1920"
-              height="1275"
+              height="1281"
               fetchpriority="high"
               decoding="async"
             />
@@ -170,9 +170,9 @@
             <img
               data-parallax="0.1"
               src="/assets/images/pool.jpg"
-              alt="Infinity pool overlooking the sea"
-              width="1600"
-              height="1068"
+              alt="Infinity pool and beach at Cotton Bay Resort &amp; Spa, Pointe Coton, Rodrigues"
+              width="1920"
+              height="1280"
               loading="lazy"
               decoding="async"
             />
@@ -206,7 +206,7 @@
               <figure>
                 <picture>
                   <source type="image/webp" srcset="/assets/images/beach-sand.webp" />
-                  <img class="wide" src="/assets/images/beach-sand.jpg" alt="White-sand beach" width="1400" height="933" loading="lazy" decoding="async" />
+                  <img class="wide" src="/assets/images/beach-sand.jpg" alt="Cotton Bay Resort &amp; Spa beach at Pointe Coton, Rodrigues" width="1600" height="1068" loading="lazy" decoding="async" />
                 </picture>
                 <figcaption>The private beach</figcaption>
               </figure>
@@ -216,7 +216,7 @@
                 <figure>
                   <picture>
                     <source type="image/webp" srcset="/assets/images/dining.webp" />
-                    <img class="sq" src="/assets/images/dining.jpg" alt="Resort dining" width="900" height="600" loading="lazy" decoding="async" />
+                    <img class="sq" src="/assets/images/dining.jpg" alt="Beach dining table at Cotton Bay Resort &amp; Spa, Rodrigues" width="1600" height="1066" loading="lazy" decoding="async" />
                   </picture>
                   <figcaption>Two restaurants</figcaption>
                 </figure>
@@ -225,9 +225,9 @@
                 <figure>
                   <picture>
                     <source type="image/webp" srcset="/assets/images/spa.webp" />
-                    <img class="sq" src="/assets/images/spa.jpg" alt="Garden spa" width="900" height="600" loading="lazy" decoding="async" />
+                    <img class="sq" src="/assets/images/spa.jpg" alt="Gym at Cotton Bay Resort &amp; Spa, Rodrigues" width="1600" height="1066" loading="lazy" decoding="async" />
                   </picture>
-                  <figcaption>Spa &amp; gym · 08:00–20:00</figcaption>
+                  <figcaption>Gym · Cotton Bay</figcaption>
                 </figure>
               </div>
             </div>
@@ -443,6 +443,7 @@
                 <span class="tv" id="grandTotal">Rs 29,700</span>
               </div>
               <p class="prov">Indicative &amp; provisional, pending the final event budget and flight fares. Figures from the RTM booking sheet and financials brief.</p>
+              <a class="btn btn-gold calc-book" id="calcBook" href="#reserve">Reserve this booking →</a>
             </div>
           </div>
         </div>
@@ -527,6 +528,26 @@
             </div>
             <form id="bookForm" novalidate>
               <div class="fgrid">
+                <div class="fg">
+                  <label for="fRoom">Room type</label>
+                  <select id="fRoom" name="roomType">
+                    <option value="share">Twin-share with a Tabler</option>
+                    <option value="partner">Double with my partner</option>
+                    <option value="single">Single room, just me</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label for="fAdults">Adults</label>
+                  <input id="fAdults" name="adults" type="text" value="1 adult" readonly />
+                </div>
+                <div class="fg">
+                  <label for="fKids">Children</label>
+                  <select id="fKids" name="kids">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </div>
                 <div class="fg">
                   <label for="fName">Full name</label>
                   <input id="fName" name="name" type="text" autocomplete="name" placeholder="Your name" required />
@@ -631,40 +652,44 @@
           <div class="pay-intro">
             <p class="eyebrow" data-reveal>§ 09 — Our media</p>
             <h2 data-reveal>From the table's own<br />archive.</h2>
-            <p data-reveal>Frames below are ready for official Cotton Bay and past-AGM media when you drop them in.</p>
+            <p data-reveal>Official Cotton Bay frames and Wikimedia photographs of Rodrigues — no stock, no empty slots.</p>
           </div>
           <div class="mem-top">
-            <div class="film" data-reveal>
+            <div class="film is-photo" data-reveal>
               <picture>
-                <source type="image/webp" srcset="/assets/images/landscape.webp" />
-                <img src="/assets/images/landscape.jpg" alt="Island landscape of Rodrigues" width="1600" height="900" loading="lazy" decoding="async" />
+                <source type="image/webp" srcset="/assets/images/sega.webp" />
+                <img src="/assets/images/sega.jpg" alt="Sega on the beach at Cotton Bay Resort &amp; Spa, Rodrigues" width="1600" height="1068" loading="lazy" decoding="async" />
               </picture>
-              <div class="play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5v14l11-7z" fill="#0C5A72"></path></svg>
-              </div>
               <div class="film-cap">
                 <div>
-                  <em>The weekend, on film</em>
-                  <small>Hero / gala film · drop your video</small>
+                  <em>Evening on the sand</em>
+                  <small>Cotton Bay Resort &amp; Spa · Rodrigues</small>
                 </div>
-                <div class="ratio">16 : 9</div>
               </div>
             </div>
             <div class="quote" data-reveal>
               <div class="mark">“</div>
-              <blockquote>The year we brought the table to the water, nobody was in a hurry to go home.</blockquote>
-              <cite>— A past Tabler</cite>
-              <p class="ph">Placeholder — replace with a real AGM quote</p>
+              <blockquote>Rodrigues keeps its own quieter clock — the lagoon, the pirogues, and a table that has never once been in a hurry.</blockquote>
+              <cite>— From the island brief</cite>
             </div>
           </div>
           <div class="mem-grid" data-reveal>
             <div class="frame">
               <figure>
                 <picture>
-                  <source type="image/webp" srcset="/assets/images/west.webp" />
-                  <img src="/assets/images/west.jpg" alt="West coast of Rodrigues" width="1400" height="1050" loading="lazy" decoding="async" />
+                  <source type="image/webp" srcset="/assets/images/anse.webp" />
+                  <img src="/assets/images/anse.jpg" alt="Anse Ali, Rodrigues" width="1400" height="1050" loading="lazy" decoding="async" />
                 </picture>
-                <figcaption>Rodrigues</figcaption>
+                <figcaption>Anse Ali</figcaption>
+              </figure>
+            </div>
+            <div class="frame">
+              <figure>
+                <picture>
+                  <source type="image/webp" srcset="/assets/images/harbour.webp" />
+                  <img src="/assets/images/harbour.jpg" alt="Port Mathurin harbour, Rodrigues" width="1400" height="1050" loading="lazy" decoding="async" />
+                </picture>
+                <figcaption>Port Mathurin</figcaption>
               </figure>
             </div>
             <div class="frame">
@@ -676,13 +701,14 @@
                 <figcaption>Mont Limon</figcaption>
               </figure>
             </div>
-            <div class="slot">
-              <div class="slot-plus">+</div>
-              <small>Memories<br />Your photo</small>
-            </div>
-            <div class="slot">
-              <div class="slot-plus">+</div>
-              <small>Memories<br />Your photo</small>
+            <div class="frame">
+              <figure>
+                <picture>
+                  <source type="image/webp" srcset="/assets/images/ile-aux-cocos.webp" />
+                  <img src="/assets/images/ile-aux-cocos.jpg" alt="Île aux Cocos, Rodrigues" width="1600" height="1182" loading="lazy" decoding="async" />
+                </picture>
+                <figcaption>Île aux Cocos</figcaption>
+              </figure>
             </div>
           </div>
         </div>
@@ -741,12 +767,14 @@
         </div>
         <div class="foot-bot">
           <span>© 2027 Round Table Mauritius · Cotton Bay Resort &amp; Spa, Pointe Coton, Rodrigues</span>
+          <span>Photos: Cotton Bay Resort &amp; Spa gallery · Wikimedia CC (Rodrigues)</span>
           <span>Questions? <a id="footMail" href="mailto:secretary.rtm@gmail.com">secretary.rtm@gmail.com</a></span>
           <span>19°43′S · 63°25′E</span>
         </div>
       </div>
     </footer>
 
+    <script src="/js/booking-state.js" defer></script>
     <script src="/js/main.js" defer></script>
   </body>
 </html>

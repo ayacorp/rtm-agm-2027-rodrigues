@@ -17,12 +17,15 @@
   const accomSingle = CONFIG.singleNight * N;
   const accomChild = CONFIG.childNight * N;
 
+  const Booking = window.BookingState || {};
   const state = { room: "share", kids: 0 };
   let currentRef = "";
   let reservedEmail = "";
   let displayTotal = 29700;
   let raf = 0;
   let proofEnabled = false;
+  let companionsDirty = false;
+  let syncingUrl = false;
 
   const $ = function (sel) {
     return document.querySelector(sel);
@@ -175,6 +178,81 @@
     setText("payRef", shown);
     const kidField = document.getElementById("kidField");
     if (kidField) kidField.classList.toggle("hidden", state.room === "share");
+    syncFormFields();
+    prefillCompanions();
+  }
+
+  function syncFormFields() {
+    const roomEl = document.getElementById("fRoom");
+    const kidsEl = document.getElementById("fKids");
+    const adultsEl = document.getElementById("fAdults");
+    if (roomEl && roomEl.value !== state.room) roomEl.value = state.room;
+    if (kidsEl) {
+      kidsEl.value = String(state.kids);
+      kidsEl.disabled = state.room === "share";
+    }
+    if (adultsEl) adultsEl.value = Booking.adultsLabel ? Booking.adultsLabel(state.room) : guestsLabel();
+  }
+
+  function prefillCompanions() {
+    const comp = document.getElementById("fComp");
+    if (!comp || companionsDirty) return;
+    const next = Booking.companionsFromState ? Booking.companionsFromState(state) : "";
+    if (comp.value !== next) comp.value = next;
+  }
+
+  function writeBookingUrl(hash) {
+    if (syncingUrl || !Booking.bookingSearchString) return;
+    const query = Booking.bookingSearchString(state);
+    const nextHash = hash == null ? (window.location.hash || "") : hash;
+    const url = window.location.pathname + "?" + query + nextHash;
+    if (window.location.pathname + window.location.search + window.location.hash !== url) {
+      history.replaceState(null, "", url);
+    }
+  }
+
+  function applyBookingState(next, options) {
+    const opts = options || {};
+    const room = Booking.normalizeRoom ? Booking.normalizeRoom(next.room) : next.room;
+    const kids = Booking.normalizeKids
+      ? Booking.normalizeKids(next.kids, room || state.room)
+      : next.kids;
+    if (room) state.room = room;
+    if (typeof kids === "number") state.kids = kids;
+    if (state.room === "share") state.kids = 0;
+    document.querySelectorAll("[data-room]").forEach(function (btn) {
+      const on = btn.getAttribute("data-room") === state.room;
+      btn.classList.toggle("is-on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    const kidVal = document.getElementById("kidVal");
+    if (kidVal) kidVal.textContent = String(state.kids);
+    syncKidButtons();
+    if (opts.animate) tweenTo(compute().total);
+    else {
+      displayTotal = compute().total;
+      render();
+    }
+    if (!opts.skipUrl) writeBookingUrl(opts.hash);
+  }
+
+  function readBookingUrl() {
+    const parsed = Booking.parseBookingSearch
+      ? Booking.parseBookingSearch(window.location.search)
+      : { room: "share", kids: 0 };
+    applyBookingState(parsed, { skipUrl: true, animate: false });
+  }
+
+  function goToReserve() {
+    writeBookingUrl("#reserve");
+    const target = document.getElementById("reserve");
+    if (target) {
+      target.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+    }
+    window.setTimeout(function () {
+      const name = document.getElementById("fName");
+      if (name) name.focus();
+    }, reduceMotion() ? 0 : 350);
   }
 
   function tweenTo(target) {
@@ -197,17 +275,7 @@
   }
 
   function setRoom(room) {
-    state.room = room;
-    if (room === "share") state.kids = 0;
-    document.querySelectorAll("[data-room]").forEach(function (btn) {
-      const on = btn.getAttribute("data-room") === room;
-      btn.classList.toggle("is-on", on);
-      btn.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-    const kidVal = document.getElementById("kidVal");
-    if (kidVal) kidVal.textContent = String(state.kids);
-    syncKidButtons();
-    tweenTo(compute().total);
+    applyBookingState({ room: room, kids: room === "share" ? 0 : state.kids }, { animate: true });
   }
 
   function syncKidButtons() {
@@ -218,11 +286,7 @@
   }
 
   function setKids(delta) {
-    state.kids = Math.max(0, Math.min(2, state.kids + delta));
-    const kidVal = document.getElementById("kidVal");
-    if (kidVal) kidVal.textContent = String(state.kids);
-    syncKidButtons();
-    tweenTo(compute().total);
+    applyBookingState({ room: state.room, kids: state.kids + delta }, { animate: true });
   }
 
   document.querySelectorAll("[data-room]").forEach(function (btn) {
@@ -258,6 +322,39 @@
 
   const form = document.getElementById("bookForm");
   const reserveBtn = document.getElementById("reserveBtn");
+  const roomField = document.getElementById("fRoom");
+  const kidsField = document.getElementById("fKids");
+  const companionsField = document.getElementById("fComp");
+  const calcBook = document.getElementById("calcBook");
+
+  if (roomField) {
+    roomField.addEventListener("change", function () {
+      setRoom(roomField.value);
+    });
+  }
+  if (kidsField) {
+    kidsField.addEventListener("change", function () {
+      applyBookingState({ room: state.room, kids: Number(kidsField.value) }, { animate: true });
+    });
+  }
+  if (companionsField) {
+    companionsField.addEventListener("input", function () {
+      const generated = Booking.companionsFromState ? Booking.companionsFromState(state) : "";
+      companionsDirty = companionsField.value !== generated;
+    });
+  }
+  if (calcBook) {
+    calcBook.addEventListener("click", function (event) {
+      event.preventDefault();
+      goToReserve();
+    });
+  }
+  window.addEventListener("popstate", function () {
+    syncingUrl = true;
+    readBookingUrl();
+    syncingUrl = false;
+  });
+
   if (form) {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
@@ -461,5 +558,9 @@
     mail.setAttribute("href", "mailto:" + CONFIG.email);
   }
 
-  setRoom("share");
+  readBookingUrl();
+  writeBookingUrl();
+  if (window.location.hash === "#reserve") {
+    window.setTimeout(goToReserve, 0);
+  }
 })();
