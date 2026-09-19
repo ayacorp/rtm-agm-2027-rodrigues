@@ -61,3 +61,11 @@ test("framed photos lock aspect-ratio so mobile heights cannot use raw HTML heig
   assert.match(html, /<figure class="is-wide">/);
   assert.match(html, /<figure class="is-tall">/);
 });
+
+test("phone breakpoint stacks destination and media photos to one column", function () {
+  assert.match(css, /@media \(max-width: 640px\)/);
+  const phone = css.split("@media (max-width: 640px)")[1] || "";
+  assert.match(phone, /\.photo-pair/);
+  assert.match(phone, /\.mem-grid/);
+  assert.match(phone, /grid-template-columns:\s*1fr/);
+});
