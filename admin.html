@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Bookings · RTM AGM 2027</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <main class="admin">
+      <div class="admin-wrap">
+        <p class="eyebrow">RTM AGM 2027 · organisers</p>
+        <h1>Reservations</h1>
+        <p class="lede">Protected list of live bookings. No seed data. Mark a transfer as paid once organisers match it to the MCB account.</p>
+        <form class="admin-auth" id="adminAuth">
+          <input id="adminToken" type="password" autocomplete="current-password" placeholder="ADMIN_TOKEN" required />
+          <button class="btn btn-gold" type="submit">Load bookings</button>
+        </form>
+        <p class="form-error hidden" id="adminError"></p>
+        <div id="adminBody"></div>
+        <p class="admin-note">curl -H "Authorization: Bearer $ADMIN_TOKEN" https://your-host/api/admin/bookings</p>
+      </div>
+    </main>
+    <script src="/js/admin.js" defer></script>
+  </body>
+</html>
