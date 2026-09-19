@@ -38,6 +38,11 @@
     return params.toString();
   }
 
+  function allowsKids(room) {
+    const value = normalizeRoom(room);
+    return value === "partner" || value === "single";
+  }
+
   function adultsLabel(room) {
     if (room === "partner") return "2 adults";
     return "1 adult";
@@ -53,13 +58,25 @@
     return parts.join(" + ");
   }
 
+  function guestsLabel(state) {
+    const room = normalizeRoom(state && state.room) || "share";
+    const kids = normalizeKids(state && state.kids, room);
+    let label = "1 Tabler";
+    if (room === "partner") label += " + partner";
+    if (kids === 1) label += " + 1 child";
+    if (kids > 1) label += " + " + kids + " children";
+    return label;
+  }
+
   return {
     ROOM_TYPES: ROOM_TYPES,
     normalizeRoom: normalizeRoom,
     normalizeKids: normalizeKids,
+    allowsKids: allowsKids,
     parseBookingSearch: parseBookingSearch,
     bookingSearchString: bookingSearchString,
     adultsLabel: adultsLabel,
     companionsFromState: companionsFromState,
+    guestsLabel: guestsLabel,
   };
 });

@@ -77,6 +77,7 @@
         <a href="#weekend">Weekend</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
       </div>
       <a class="btn btn-gold btn-nav" href="#reserve">Reserve →</a>
     </nav>
@@ -203,7 +204,7 @@
           </div>
           <div class="photo-grid" data-reveal>
             <div class="frame">
-              <figure>
+              <figure class="is-wide">
                 <picture>
                   <source type="image/webp" srcset="/assets/images/beach-sand.webp" />
                   <img class="wide" src="/assets/images/beach-sand.jpg" alt="Cotton Bay Resort &amp; Spa beach at Pointe Coton, Rodrigues" width="1600" height="1068" loading="lazy" decoding="async" />
@@ -213,7 +214,7 @@
             </div>
             <div class="photo-pair">
               <div class="frame">
-                <figure>
+                <figure class="is-sq">
                   <picture>
                     <source type="image/webp" srcset="/assets/images/dining.webp" />
                     <img class="sq" src="/assets/images/dining.jpg" alt="Beach dining table at Cotton Bay Resort &amp; Spa, Rodrigues" width="1600" height="1066" loading="lazy" decoding="async" />
@@ -222,7 +223,7 @@
                 </figure>
               </div>
               <div class="frame">
-                <figure>
+                <figure class="is-sq">
                   <picture>
                     <source type="image/webp" srcset="/assets/images/spa.webp" />
                     <img class="sq" src="/assets/images/spa.jpg" alt="Gym at Cotton Bay Resort &amp; Spa, Rodrigues" width="1600" height="1066" loading="lazy" decoding="async" />
@@ -236,7 +237,7 @@
 
         <div class="split split-end">
           <div class="frame split-photo" data-reveal>
-            <figure>
+            <figure class="is-tall">
               <picture>
                 <source type="image/webp" srcset="/assets/images/lagoon.webp" />
                 <img class="tall" src="/assets/images/lagoon.jpg" alt="Turquoise lagoon of Rodrigues" width="1600" height="1067" loading="lazy" decoding="async" />
@@ -436,6 +437,7 @@
             </div>
             <div class="calc-out">
               <div class="oh">Your booking</div>
+              <div class="guests-badge">Guests · <b id="calcGuests">1 Tabler</b></div>
               <div class="rooms-badge" id="roomsBadge">One shared room · we'll pair you with a fellow Tabler</div>
               <div id="lines"></div>
               <div class="total">
@@ -540,7 +542,7 @@
                   <label for="fAdults">Adults</label>
                   <input id="fAdults" name="adults" type="text" value="1 adult" readonly />
                 </div>
-                <div class="fg">
+                <div class="fg hidden" id="formKidField">
                   <label for="fKids">Children</label>
                   <select id="fKids" name="kids">
                     <option value="0">0</option>
@@ -748,6 +750,44 @@
           </div>
         </div>
       </section>
+
+      <section class="sec contact" id="contact">
+        <div class="wrap-form">
+          <div class="center-head">
+            <p class="eyebrow" data-reveal>§ 11 — Contact us</p>
+            <h2 data-reveal>Questions about the weekend?</h2>
+            <p data-reveal>Leave a name, email, and message. We'll reply by email.</p>
+          </div>
+          <div class="form-shell" data-reveal>
+            <form id="contactForm" novalidate>
+              <div class="fgrid">
+                <div class="fg">
+                  <label for="cName">Full name</label>
+                  <input id="cName" name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="120" />
+                </div>
+                <div class="fg">
+                  <label for="cEmail">Email</label>
+                  <input id="cEmail" name="email" type="email" autocomplete="email" placeholder="you@email.com" required />
+                </div>
+                <div class="fg full">
+                  <label for="cMessage">Message</label>
+                  <textarea id="cMessage" name="message" rows="5" placeholder="How can we help?" required maxlength="4000"></textarea>
+                </div>
+              </div>
+              <p class="form-error hidden" id="contactError" role="alert"></p>
+              <button class="btn btn-gold" type="submit" id="contactBtn">Send message →</button>
+              <p class="form-note">We'll write back to the email you leave here.</p>
+            </form>
+            <div class="confirm" id="contactConfirm" role="status" aria-live="polite">
+              <div class="tick" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="36" height="36"><path d="M20 6L9 17l-5-5"></path></svg>
+              </div>
+              <h3>Message sent.</h3>
+              <p>Thanks — we'll reply to the email you left.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -763,6 +803,7 @@
           <div class="foot-cta">
             <div class="m">Adopt · Adapt · Improve</div>
             <a class="btn btn-gold btn-nav" href="#reserve">Reserve your place →</a>
+            <a class="btn btn-ghost btn-nav" href="#contact">Contact us</a>
           </div>
         </div>
         <div class="foot-bot">
@@ -772,12 +813,13 @@
           <span>19°43′S · 63°25′E</span>
         </div>
         <p class="foot-credit">
-          <span style="opacity:0.78">Powered by <a href="https://www.ayacorp.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp</a></span>
+          <span class="foot-credit-powered">Powered by <a href="https://www.ayacorp.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp</a></span>
         </p>
       </div>
     </footer>
 
     <script src="/js/booking-state.js" defer></script>
     <script src="/js/main.js" defer></script>
+    <script src="/js/contact.js" defer></script>
   </body>
 </html>

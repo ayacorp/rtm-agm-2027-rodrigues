@@ -149,7 +149,12 @@
     return "Twin-share";
   }
 
+  function kidsAllowed() {
+    return Booking.allowsKids ? Booking.allowsKids(state.room) : state.room !== "share";
+  }
+
   function guestsLabel() {
+    if (Booking.guestsLabel) return Booking.guestsLabel(state);
     return "1 Tabler"
       + (state.room === "partner" ? " + partner" : "")
       + (state.kids ? " + " + state.kids + (state.kids > 1 ? " children" : " child") : "");
@@ -168,16 +173,17 @@
         return '<div class="line"><div><div class="lt">' + l.t + '</div><div class="ls">' + l.s + "</div></div><div class=\"lv\">" + fmt(l.v) + "</div></div>";
       }).join("");
     }
+    const guests = guestsLabel();
     setText("roomsBadge", r.roomsText);
+    setText("calcGuests", guests);
     setText("grandTotal", fmt(totalOverride == null ? r.total : totalOverride));
     setText("smRoom", roomLabel());
-    setText("smGuests", guestsLabel());
+    setText("smGuests", guests);
     setText("smTotal", fmt(r.total));
     const shown = currentRef || "RTM27-····";
     setText("smRef", shown);
     setText("payRef", shown);
-    const kidField = document.getElementById("kidField");
-    if (kidField) kidField.classList.toggle("hidden", state.room === "share");
+    syncKidControls();
     syncFormFields();
     prefillCompanions();
   }
@@ -186,10 +192,11 @@
     const roomEl = document.getElementById("fRoom");
     const kidsEl = document.getElementById("fKids");
     const adultsEl = document.getElementById("fAdults");
+    const allowed = kidsAllowed();
     if (roomEl && roomEl.value !== state.room) roomEl.value = state.room;
     if (kidsEl) {
-      kidsEl.value = String(state.kids);
-      kidsEl.disabled = state.room === "share";
+      kidsEl.value = String(allowed ? state.kids : 0);
+      kidsEl.disabled = !allowed;
     }
     if (adultsEl) adultsEl.value = Booking.adultsLabel ? Booking.adultsLabel(state.room) : guestsLabel();
   }
@@ -219,7 +226,7 @@
       : next.kids;
     if (room) state.room = room;
     if (typeof kids === "number") state.kids = kids;
-    if (state.room === "share") state.kids = 0;
+    if (!kidsAllowed()) state.kids = 0;
     document.querySelectorAll("[data-room]").forEach(function (btn) {
       const on = btn.getAttribute("data-room") === state.room;
       btn.classList.toggle("is-on", on);
@@ -227,7 +234,7 @@
     });
     const kidVal = document.getElementById("kidVal");
     if (kidVal) kidVal.textContent = String(state.kids);
-    syncKidButtons();
+    syncKidControls();
     if (opts.animate) tweenTo(compute().total);
     else {
       displayTotal = compute().total;
@@ -275,17 +282,27 @@
   }
 
   function setRoom(room) {
-    applyBookingState({ room: room, kids: room === "share" ? 0 : state.kids }, { animate: true });
+    const nextRoom = Booking.normalizeRoom ? Booking.normalizeRoom(room) || state.room : room;
+    const keepKids = Booking.allowsKids ? Booking.allowsKids(nextRoom) : nextRoom !== "share";
+    applyBookingState({ room: nextRoom, kids: keepKids ? state.kids : 0 }, { animate: true });
   }
 
-  function syncKidButtons() {
+  function syncKidControls() {
+    const allowed = kidsAllowed();
+    const kidField = document.getElementById("kidField");
+    const formKidField = document.getElementById("formKidField");
+    if (kidField) kidField.classList.toggle("hidden", !allowed);
+    if (formKidField) formKidField.classList.toggle("hidden", !allowed);
     const minus = document.getElementById("kidMinus");
     const plus = document.getElementById("kidPlus");
-    if (minus) minus.disabled = state.kids <= 0;
-    if (plus) plus.disabled = state.kids >= 2;
+    if (minus) minus.disabled = !allowed || state.kids <= 0;
+    if (plus) plus.disabled = !allowed || state.kids >= 2;
+    const stepper = document.querySelector(".stepper");
+    if (stepper) stepper.setAttribute("aria-disabled", allowed ? "false" : "true");
   }
 
   function setKids(delta) {
+    if (!kidsAllowed()) return;
     applyBookingState({ room: state.room, kids: state.kids + delta }, { animate: true });
   }
 
@@ -333,14 +350,21 @@
     });
   }
   if (kidsField) {
-    kidsField.addEventListener("change", function () {
-      applyBookingState({ room: state.room, kids: Number(kidsField.value) }, { animate: true });
-    });
+    const onKidsField = function () {
+      applyBookingState({
+        room: state.room,
+        kids: kidsAllowed() ? Number(kidsField.value) : 0,
+      }, { animate: true });
+    };
+    kidsField.addEventListener("change", onKidsField);
+    kidsField.addEventListener("input", onKidsField);
   }
   if (companionsField) {
     companionsField.addEventListener("input", function () {
       const generated = Booking.companionsFromState ? Booking.companionsFromState(state) : "";
       companionsDirty = companionsField.value !== generated;
+      setText("calcGuests", guestsLabel());
+      setText("smGuests", guestsLabel());
     });
   }
   if (calcBook) {
@@ -537,15 +561,6 @@
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -7% 0px" });
     document.querySelectorAll("[data-reveal]").forEach(function (el) { io.observe(el); });
-
-    window.addEventListener("scroll", function () {
-      document.querySelectorAll("[data-parallax]").forEach(function (el) {
-        const sp = parseFloat(el.getAttribute("data-parallax")) || 0.12;
-        const r = el.getBoundingClientRect();
-        const mid = r.top + r.height / 2 - window.innerHeight / 2;
-        el.style.transform = "translate3d(0," + (mid * -sp).toFixed(1) + "px,0)";
-      });
-    }, { passive: true });
   } else {
     document.querySelectorAll("[data-reveal]").forEach(function (el) {
       el.classList.add("is-in");
