@@ -1661,3 +1661,13 @@ h3 { font-family: var(--disp); font-weight: 500; }
   border-color: #e2b089;
   margin-bottom: 18px;
 }
+
+/* Portal Passport–style credit */
+.footer-credit-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-credit-link:hover {
+  opacity: 1;
+}
