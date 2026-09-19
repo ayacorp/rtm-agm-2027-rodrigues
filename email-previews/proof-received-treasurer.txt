@@ -1,0 +1,23 @@
+Transfer proof received.
+
+Reference: RTM27-MOREL-1842
+Name: Alex Morel
+Email: alex@example.com
+Phone: 59061912
+Table: RT9
+Room: partner
+Kids: 1
+Total: Rs 65,200 MUR
+Status: awaiting_verification
+Proof: https://example.public.blob.vercel-storage.com/proofs/rtm27-morel-1842.png
+Created: 2026-09-19T10:00:00.000Z
+
+Rail: MCB MUR bank transfer only. Quote RTM27-MOREL-1842 as the payment reference.
+Beneficiary name: Mauritius Round Table No. 9
+Cheques payable to: Round Table 9
+Bank: The Mauritius Commercial Bank (MCB), Sir William Newton Street, Port Louis
+Account: 000443540438
+IBAN: MU13MCBL0944000443540438000MUR
+SWIFT: MCBLMUMU
+Treasurer copy phone: +230 5906 1912
+https://rtm-agm-2027-rodrigues.vercel.app

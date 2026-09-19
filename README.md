@@ -86,7 +86,9 @@ Optional: `STORE_DRIVER=postgres|kv|blob|file|memory` (auto-detect prefers Postg
 
 ### Notifications
 
-If Resend/SMTP is missing, the API queues the message (`data/notify-queue.json` locally, `/tmp` on Vercel) and logs it. That is not production.
+Reserve, “I’ve paid”, and proof-upload each send **branded HTML** (plus text/plain) to the guest and a branded operational copy to `BOOKING_NOTIFY_EMAIL`. Templates live in `lib/email-templates.js`. Bank numbers come from `publicBank()` — same locked MCB strings as checkout. Default `RESEND_FROM` is `RTM AGM 2027 <bookings@friday.mu>`. Logo: `assets/logo.png`. Checked-in renders: [`email-previews/`](./email-previews/).
+
+If Resend/SMTP is missing, the API queues the messages (`data/notify-queue.json` locally, `/tmp` on Vercel) and logs them. That is not production.
 
 ### Admin
 
@@ -112,7 +114,7 @@ If Resend/SMTP is missing, the API queues the message (`data/notify-queue.json` 
 
 4. **MUST** set a durable store: `POSTGRES_URL` (preferred) **or** `KV_REST_API_URL` + `KV_REST_API_TOKEN`. File/`/tmp` is local-only.
 5. **MUST** set `BLOB_READ_WRITE_TOKEN` so checkout proof upload is enabled (`proofUpload: true`).
-6. **MUST** set `RESEND_API_KEY` + `RESEND_FROM` (or SMTP_*) so reserves and “I’ve paid” email `ishant@ayacorp.io`.
+6. **MUST** set `RESEND_API_KEY` + `RESEND_FROM=RTM AGM 2027 <bookings@friday.mu>` (or SMTP_*) so reserves, “I’ve paid”, and proof emails reach the guest and `ishant@ayacorp.io`.
 7. `ADMIN_TOKEN` for `/admin` and `/api/admin/bookings`.
 8. Redeploy so the functions pick up the env. Deploy `main` (or this PR for a preview).
 

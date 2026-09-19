@@ -23,7 +23,7 @@ async function submitProof(fields, file) {
   const url = await uploadProof(ref, file);
   const status = reservation.status === "paid" ? "paid" : "awaiting_verification";
   const updated = await store.update(ref, { proofUrl: url, status: status });
-  const notify = await notifyBooking("paid_claimed", updated);
+  const notify = await notifyBooking("proof_received", updated);
   if (notify.queued) {
     await store.update(ref, { notifyQueued: true, notifyLog: notify.channel });
     updated.notifyQueued = true;
