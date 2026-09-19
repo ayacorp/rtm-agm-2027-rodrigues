@@ -86,6 +86,16 @@ test("BANK_DETAILS_PUBLIC=false hides numbers even when env is set", function ()
   assert.doesNotMatch(JSON.stringify(bank), /000443540438/);
 });
 
+test("footer credits Aya Corp the same way as Portal Passport", function () {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  assert.match(
+    html,
+    /<span style="opacity:0.78">Powered by <a href="https:\/\/www\.ayacorp\.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp<\/a><\/span>/
+  );
+  assert.doesNotMatch(html, /href="https:\/\/ayacorp\.io"/);
+  assert.doesNotMatch(html, /ayacob/i);
+});
+
 test("client assets do not hardcode MCB account digits", function () {
   const root = path.join(__dirname, "..");
   const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
