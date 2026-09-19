@@ -41,3 +41,23 @@ test("CSP style-src stays hash-free of unsafe-inline; JS does not set element.st
   assert.doesNotMatch(vercel, /unsafe-inline/);
   assert.doesNotMatch(mainJs, /\.style\./);
 });
+
+test("Contact us is email-only to ishant@ayacorp.io", function () {
+  assert.match(html, /id="contact"/);
+  assert.match(html, /href="#contact">Contact</);
+  assert.match(html, /mailto:ishant@ayacorp\.io">Contact us/);
+  assert.match(html, /WhatsApp or a form may follow/);
+  assert.doesNotMatch(html, /wa\.me|whatsapp\.com|\+230\s*\d{4}/i);
+  assert.doesNotMatch(html, /<form[^>]*id="contact/i);
+});
+
+test("framed photos lock aspect-ratio so mobile heights cannot use raw HTML height", function () {
+  assert.match(css, /\.frame figure\.is-wide \{ aspect-ratio: 16 \/ 10; \}/);
+  assert.match(css, /\.frame figure\.is-sq \{ aspect-ratio: 1; \}/);
+  assert.match(css, /\.frame figure\.is-tall \{ aspect-ratio: 5 \/ 6; \}/);
+  assert.match(css, /\.mem-grid \.frame figure \{ aspect-ratio: 4 \/ 5; \}/);
+  assert.match(css, /img \{\n  display: block;\n  max-width: 100%;\n  height: auto;/);
+  assert.match(css, /\.frame img \{\n  object-fit: cover;/);
+  assert.match(html, /<figure class="is-wide">/);
+  assert.match(html, /<figure class="is-tall">/);
+});
