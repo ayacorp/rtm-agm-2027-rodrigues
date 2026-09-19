@@ -90,8 +90,9 @@ test("footer credits Aya Corp the same way as Portal Passport", function () {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   assert.match(
     html,
-    /<span style="opacity:0.78">Powered by <a href="https:\/\/www\.ayacorp\.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp<\/a><\/span>/
+    /<span class="foot-credit-powered">Powered by <a href="https:\/\/www\.ayacorp\.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp<\/a><\/span>/
   );
+  assert.doesNotMatch(html, /style="/);
   assert.doesNotMatch(html, /href="https:\/\/ayacorp\.io"/);
   assert.doesNotMatch(html, /ayacob/i);
 });
