@@ -1569,34 +1569,11 @@ h3 { font-family: var(--disp); font-weight: 500; }
 
 /* Contact */
 .contact { background: var(--lagoon); color: var(--white); }
-.contact .center-head { margin-bottom: 36px; }
+.contact .center-head { max-width: 600px; margin-bottom: clamp(40px, 5vw, 58px); }
 .contact .center-head .eyebrow { color: var(--gold); }
 .contact .center-head h2 { color: var(--white); }
-.contact .center-head p { color: rgba(255, 255, 255, 0.68); }
-
-.contact-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-}
-
-.contact-note {
-  max-width: 42ch;
-  font-size: 14.5px;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.62);
-}
-
-.contact-mail {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--gold-soft);
-}
-
-.contact-mail a { color: inherit; border-bottom: 1px solid rgba(230, 210, 160, 0.4); }
+.contact .center-head p { color: rgba(255, 255, 255, 0.68); font-size: 16.5px; }
+.contact .form-shell .fg textarea { min-height: 140px; }
 
 /* Footer */
 .site-footer {

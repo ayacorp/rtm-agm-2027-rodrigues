@@ -44,6 +44,7 @@ const TYPES = {
 
 const routes = {
   "/api/reserve": "../api/reserve.js",
+  "/api/contact": "../api/contact.js",
   "/api/config": "../api/config.js",
   "/api/booking/paid": "../api/booking/paid.js",
   "/api/booking/proof": "../api/booking/proof.js",

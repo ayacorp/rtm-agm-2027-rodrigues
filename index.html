@@ -752,15 +752,39 @@
       </section>
 
       <section class="sec contact" id="contact">
-        <div class="wrap-s">
+        <div class="wrap-form">
           <div class="center-head">
             <p class="eyebrow" data-reveal>§ 11 — Contact us</p>
             <h2 data-reveal>Questions about the weekend?</h2>
-            <p data-reveal>Email is the channel for now. WhatsApp or a form may follow once those are locked.</p>
+            <p data-reveal>Leave a name, email, and message. We'll reply by email.</p>
           </div>
-          <div class="contact-cta" data-reveal>
-            <a class="btn btn-gold" href="mailto:ishant@ayacorp.io">Contact us →</a>
-            <p class="contact-mail"><a href="mailto:ishant@ayacorp.io">ishant@ayacorp.io</a></p>
+          <div class="form-shell" data-reveal>
+            <form id="contactForm" novalidate>
+              <div class="fgrid">
+                <div class="fg">
+                  <label for="cName">Full name</label>
+                  <input id="cName" name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="120" />
+                </div>
+                <div class="fg">
+                  <label for="cEmail">Email</label>
+                  <input id="cEmail" name="email" type="email" autocomplete="email" placeholder="you@email.com" required />
+                </div>
+                <div class="fg full">
+                  <label for="cMessage">Message</label>
+                  <textarea id="cMessage" name="message" rows="5" placeholder="How can we help?" required maxlength="4000"></textarea>
+                </div>
+              </div>
+              <p class="form-error hidden" id="contactError" role="alert"></p>
+              <button class="btn btn-gold" type="submit" id="contactBtn">Send message →</button>
+              <p class="form-note">We'll write back to the email you leave here.</p>
+            </form>
+            <div class="confirm" id="contactConfirm" role="status" aria-live="polite">
+              <div class="tick" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="36" height="36"><path d="M20 6L9 17l-5-5"></path></svg>
+              </div>
+              <h3>Message sent.</h3>
+              <p>Thanks — we'll reply to the email you left.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -779,7 +803,7 @@
           <div class="foot-cta">
             <div class="m">Adopt · Adapt · Improve</div>
             <a class="btn btn-gold btn-nav" href="#reserve">Reserve your place →</a>
-            <a class="btn btn-ghost btn-nav" href="mailto:ishant@ayacorp.io">Contact us</a>
+            <a class="btn btn-ghost btn-nav" href="#contact">Contact us</a>
           </div>
         </div>
         <div class="foot-bot">
@@ -796,5 +820,6 @@
 
     <script src="/js/booking-state.js" defer></script>
     <script src="/js/main.js" defer></script>
+    <script src="/js/contact.js" defer></script>
   </body>
 </html>

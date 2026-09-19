@@ -42,13 +42,19 @@ test("CSP style-src stays hash-free of unsafe-inline; JS does not set element.st
   assert.doesNotMatch(mainJs, /\.style\./);
 });
 
-test("Contact us is email-only to ishant@ayacorp.io", function () {
+test("Contact us is a short Resend form, not mailto or WhatsApp", function () {
   assert.match(html, /id="contact"/);
   assert.match(html, /href="#contact">Contact</);
-  assert.match(html, /mailto:ishant@ayacorp\.io">Contact us/);
-  assert.match(html, /WhatsApp or a form may follow/);
-  assert.doesNotMatch(html, /wa\.me|whatsapp\.com|\+230\s*\d{4}/i);
-  assert.doesNotMatch(html, /<form[^>]*id="contact/i);
+  assert.match(html, /href="#contact">Contact us</);
+  assert.match(html, /id="contactForm"/);
+  assert.match(html, /id="cName" name="name"/);
+  assert.match(html, /id="cEmail" name="email"/);
+  assert.match(html, /id="cMessage" name="message"/);
+  assert.match(html, /id="contactBtn"/);
+  assert.match(html, /id="contactConfirm"/);
+  assert.match(html, /<script src="\/js\/contact\.js" defer><\/script>/);
+  assert.doesNotMatch(html, /mailto:ishant@ayacorp\.io/);
+  assert.doesNotMatch(html, /wa\.me|whatsapp\.com|WhatsApp/i);
 });
 
 test("framed photos lock aspect-ratio so mobile heights cannot use raw HTML height", function () {
