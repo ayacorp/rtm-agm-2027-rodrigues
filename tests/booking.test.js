@@ -88,10 +88,11 @@ test("BANK_DETAILS_PUBLIC=false hides numbers even when env is set", function ()
 
 test("footer credits Aya Corp the same way as Portal Passport", function () {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  assert.match(html, /Powered by/);
-  assert.match(html, /href="https:\/\/www\.ayacorp\.io"/);
-  assert.match(html, /class="footer-credit-link"/);
-  assert.match(html, /rel="noopener noreferrer"/);
+  assert.match(
+    html,
+    /<span style="opacity:0.78">Powered by <a href="https:\/\/www\.ayacorp\.io" target="_blank" rel="noopener noreferrer" class="footer-credit-link">Aya Corp<\/a><\/span>/
+  );
+  assert.doesNotMatch(html, /href="https:\/\/ayacorp\.io"/);
   assert.doesNotMatch(html, /ayacob/i);
 });
 
