@@ -25,12 +25,6 @@ html {
   scroll-padding-top: var(--sticky-nav-offset);
 }
 
-section[id],
-header[id],
-#main {
-  scroll-margin-top: var(--sticky-nav-offset);
-}
-
 body {
   font-family: var(--sans);
   color: var(--ink);

@@ -32,7 +32,7 @@ test("kids stepper is hidden for twin-share and gated in JS", function () {
 test("sticky header offset is applied to in-page anchors", function () {
   assert.match(css, /--sticky-nav-offset/);
   assert.match(css, /scroll-padding-top:\s*var\(--sticky-nav-offset\)/);
-  assert.match(css, /scroll-margin-top:\s*var\(--sticky-nav-offset\)/);
+  assert.doesNotMatch(css, /scroll-margin-top:\s*var\(--sticky-nav-offset\)/);
   assert.match(html, /id="invitation"/);
 });
 
